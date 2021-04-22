@@ -21,6 +21,7 @@ import {
 	withAnalytics,
 } from 'calypso/state/analytics/actions';
 import { isDefaultLocale, localizeUrl } from 'calypso/lib/i18n-utils';
+import { preventWidows } from 'calypso/lib/formatting';
 
 /**
  * Style dependencies
@@ -99,7 +100,7 @@ class InlineSupportLink extends Component {
 				{ ...externalLinkProps }
 			>
 				{ shouldLazyLoadAlternates && <QuerySupportArticleAlternates postId={ supportPostId } /> }
-				{ showText && text }
+				{ showText && preventWidows( text ) }
 				{ supportPostId && showIcon && <Gridicon icon="help-outline" size={ iconSize } /> }
 			</LinkComponent>
 		);
