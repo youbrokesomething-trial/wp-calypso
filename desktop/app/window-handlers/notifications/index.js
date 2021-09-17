@@ -62,14 +62,14 @@ module.exports = function ( { window, view } ) {
 	ViewModel.on( 'notification', function ( notification ) {
 		log.info( 'Received notification: ', notification );
 
+		notificationBadgeCount++;
+		updateNotificationBadge();
+
 		if ( ! Settings.getSetting( 'notifications' ) ) {
 			log.info( 'Notifications disabled!' );
 
 			return;
 		}
-
-		notificationBadgeCount++;
-		updateNotificationBadge();
 
 		const { id, type, title, subtitle, body, navigate } = notification;
 
@@ -85,6 +85,9 @@ module.exports = function ( { window, view } ) {
 			} );
 
 			desktopNotification.on( 'click', async function () {
+				notificationBadgeCount = Math.max( notificationBadgeCount - 1, 0 );
+				updateNotificationBadge();
+
 				ViewModel.didClickNotification( id, () =>
 					// Manually refresh notifications panel when a message is clicked
 					// to reflect read/unread highlighting.
@@ -127,9 +130,6 @@ module.exports = function ( { window, view } ) {
 
 				// Tracks API call
 				view.webContents.send( 'notification-clicked', notification );
-
-				notificationBadgeCount = Math.max( notificationBadgeCount - 1, 0 );
-				updateNotificationBadge();
 			} );
 
 			desktopNotification.show();
