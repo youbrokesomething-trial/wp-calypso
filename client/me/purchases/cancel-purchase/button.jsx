@@ -1,4 +1,8 @@
-import { isDomainRegistration } from '@automattic/calypso-products';
+import {
+	isDomainRegistration,
+	isJetpackPlan,
+	isJetpackProduct,
+} from '@automattic/calypso-products';
 import { Button } from '@automattic/components';
 import { getCurrencyDefaults } from '@automattic/format-currency';
 import { localize } from 'i18n-calypso';
@@ -6,6 +10,7 @@ import page from 'page';
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
+import CancelJetpackForm from 'calypso/components/marketing-survey/cancel-jetpack-form';
 import CancelPurchaseForm from 'calypso/components/marketing-survey/cancel-purchase-form';
 import { CANCEL_FLOW_TYPE } from 'calypso/components/marketing-survey/cancel-purchase-form/constants';
 import {
@@ -275,6 +280,8 @@ class CancelPurchaseButton extends Component {
 		}
 
 		const disableButtons = this.state.disabled || this.props.disabled;
+		const flowType = this.getCancellationFlowType();
+		const { isJetpack } = this.props;
 
 		return (
 			<div>
@@ -286,24 +293,42 @@ class CancelPurchaseButton extends Component {
 				>
 					{ text }
 				</Button>
-				<CancelPurchaseForm
-					disableButtons={ disableButtons }
-					defaultContent={ this.renderCancellationEffect() }
-					purchase={ purchase }
-					isVisible={ this.state.showDialog }
-					onClose={ this.closeDialog }
-					onClickFinalConfirm={ this.submitCancelAndRefundPurchase }
-					downgradeClick={ this.downgradeClick }
-					flowType={ this.getCancellationFlowType() }
-				/>
+				{ ! isJetpack && (
+					<CancelPurchaseForm
+						disableButtons={ disableButtons }
+						defaultContent={ this.renderCancellationEffect() }
+						purchase={ purchase }
+						isVisible={ this.state.showDialog }
+						onClose={ this.closeDialog }
+						onClickFinalConfirm={ this.submitCancelAndRefundPurchase }
+						downgradeClick={ this.downgradeClick }
+						flowType={ flowType }
+					/>
+				) }
+
+				{ isJetpack && (
+					<CancelJetpackForm
+						disableButtons={ disableButtons }
+						purchase={ purchase }
+						isVisible={ this.state.showDialog }
+						onClose={ this.closeDialog }
+						onClickFinalConfirm={ this.removePurchase }
+						flowType={ flowType }
+					/>
+				) }
 			</div>
 		);
 	}
 }
 
-export default connect( null, {
-	clearPurchases,
-	errorNotice,
-	successNotice,
-	refreshSitePlans,
-} )( localize( CancelPurchaseButton ) );
+export default connect(
+	( state, { purchase } ) => ( {
+		isJetpack: purchase && ( isJetpackPlan( purchase ) || isJetpackProduct( purchase ) ),
+	} ),
+	{
+		clearPurchases,
+		errorNotice,
+		successNotice,
+		refreshSitePlans,
+	}
+)( localize( CancelPurchaseButton ) );
