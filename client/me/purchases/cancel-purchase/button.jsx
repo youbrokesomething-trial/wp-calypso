@@ -302,7 +302,7 @@ class CancelPurchaseButton extends Component {
 						purchase={ purchase }
 						isVisible={ this.state.showDialog }
 						onClose={ this.closeDialog }
-						onClickFinalConfirm={ this.removePurchase }
+						onClickFinalConfirm={ this.submitCancelAndRefundPurchase }
 						flowType={ flowType }
 					/>
 				) }
