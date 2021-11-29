@@ -1,5 +1,4 @@
 import { ToggleControl } from '@wordpress/components';
-import classNames from 'classnames';
 import { useTranslate, useRtl } from 'i18n-calypso';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
@@ -20,14 +19,14 @@ const TitanNewMailbox = ( {
 	onReturnKeyPress = noop,
 	mailbox: {
 		alternativeEmail: { value: alternativeEmail, error: alternativeEmailError },
-		domain: { value: domain, error: domainError },
+		domain: { error: domainError },
 		isAdmin: { value: isAdmin, error: isAdminError },
 		mailbox: { value: mailbox, error: mailboxError },
 		name: { value: name, error: nameError },
 		password: { value: password, error: passwordError },
 	},
+	selectedDomainName,
 	showAllErrors = false,
-	showLabels = true,
 } ) => {
 	const translate = useTranslate();
 	const isRtl = useRtl();
@@ -58,17 +57,12 @@ const TitanNewMailbox = ( {
 
 	return (
 		<>
-			<div
-				className={ classNames( 'titan-new-mailbox', {
-					'show-labels': showLabels,
-				} ) }
-			>
+			<div className="titan-new-mailbox">
 				<div className="titan-new-mailbox__name-and-remove">
 					<FormFieldset>
 						<FormLabel>
-							{ showLabels && translate( 'Full name' ) }
+							{ translate( 'Full name' ) }
 							<FormTextInput
-								placeholder={ translate( 'Full name' ) }
 								value={ name }
 								required
 								isError={ hasNameError }
@@ -86,9 +80,8 @@ const TitanNewMailbox = ( {
 				</div>
 				<FormFieldset>
 					<FormLabel>
-						{ showLabels && translate( 'Email address' ) }
+						{ translate( 'Email address' ) }
 						<FormTextInputWithAffixes
-							placeholder={ translate( 'Email address' ) }
 							value={ mailbox }
 							isError={ hasMailboxError }
 							onChange={ ( event ) => {
@@ -98,19 +91,18 @@ const TitanNewMailbox = ( {
 								setMailboxFieldTouched( hasBeenValidated );
 							} }
 							onKeyUp={ onReturnKeyPress }
-							prefix={ isRtl ? `\u200e@${ domain }\u202c` : null }
-							suffix={ isRtl ? null : `\u200e@${ domain }\u202c` }
+							prefix={ isRtl ? `\u200e@${ selectedDomainName }\u202c` : null }
+							suffix={ isRtl ? null : `\u200e@${ selectedDomainName }\u202c` }
 						/>
 					</FormLabel>
 					{ hasMailboxError && <FormInputValidation text={ mailboxError } isError /> }
 				</FormFieldset>
 				<FormFieldset>
 					<FormLabel>
-						{ showLabels && translate( 'Password' ) }
+						{ translate( 'Password' ) }
 						<FormPasswordInput
 							autoCapitalize="off"
 							autoCorrect="off"
-							placeholder={ translate( 'Password' ) }
 							value={ password }
 							maxLength={ 100 }
 							isError={ hasPasswordError }
@@ -141,18 +133,10 @@ const TitanNewMailbox = ( {
 
 				<FormFieldset>
 					<FormLabel>
-						{ showLabels &&
-							translate( 'Password reset email address', {
-								comment: 'This is the email address we will send password reset emails to',
-							} ) }
+						{ translate( 'Password reset email address', {
+							comment: 'This is the email address we will send password reset emails to',
+						} ) }
 						<FormTextInput
-							placeholder={
-								showLabels
-									? translate( 'Email address' )
-									: translate( 'Password reset email address', {
-											comment: 'This is the email address we will send password reset emails to',
-									  } )
-							}
 							value={ alternativeEmail }
 							isError={ hasAlternativeEmailError }
 							onChange={ ( event ) => {
@@ -178,7 +162,7 @@ TitanNewMailbox.propTypes = {
 	onReturnKeyPress: PropTypes.func.isRequired,
 	mailbox: getMailboxPropTypeShape(),
 	showAllErrors: PropTypes.bool,
-	showLabels: PropTypes.bool.isRequired,
+	selectedDomainName: PropTypes.string.isRequired,
 };
 
 export default TitanNewMailbox;

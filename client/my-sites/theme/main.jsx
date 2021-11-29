@@ -37,7 +37,7 @@ import ThanksModal from 'calypso/my-sites/themes/thanks-modal';
 import { connectOptions } from 'calypso/my-sites/themes/theme-options';
 import ThemePreview from 'calypso/my-sites/themes/theme-preview';
 import { recordTracksEvent } from 'calypso/state/analytics/actions';
-import { getCurrentUserId } from 'calypso/state/current-user/selectors';
+import { isUserLoggedIn } from 'calypso/state/current-user/selectors';
 import { isUserPaid } from 'calypso/state/purchases/selectors';
 import getPreviousRoute from 'calypso/state/selectors/get-previous-route';
 import isVipSite from 'calypso/state/selectors/is-vip-site';
@@ -120,6 +120,7 @@ class ThemeSheet extends Component {
 		this.scrollToTop();
 	}
 
+	// @TODO: Please update https://github.com/Automattic/wp-calypso/issues/58453 if you are refactoring away from UNSAFE_* lifecycle methods!
 	UNSAFE_componentWillUpdate( nextProps ) {
 		if ( nextProps.id !== this.props.id ) {
 			this.scrollToTop();
@@ -670,7 +671,7 @@ class ThemeSheet extends Component {
 
 		const plansUrl = siteSlug ? `/plans/${ siteSlug }/?plan=value_bundle` : '/plans';
 
-		const { canonicalUrl, currentUserId, description, name: themeName } = this.props;
+		const { canonicalUrl, description, name: themeName } = this.props;
 		const title =
 			themeName &&
 			translate( '%(themeName)s Theme', {
@@ -757,7 +758,7 @@ class ThemeSheet extends Component {
 		return (
 			<Main className={ className }>
 				<QueryCanonicalTheme themeId={ this.props.id } siteId={ siteId } />
-				{ currentUserId && <QueryUserPurchases userId={ currentUserId } /> }
+				<QueryUserPurchases />
 				{
 					siteId && (
 						<QuerySitePurchases siteId={ siteId } />
@@ -844,8 +845,7 @@ export default connect(
 		const siteSlug = getSiteSlug( state, siteId );
 		const isWpcomTheme = isThemeWpcom( state, id );
 		const backPath = getBackPath( state );
-		const currentUserId = getCurrentUserId( state );
-		const isCurrentUserPaid = isUserPaid( state, currentUserId );
+		const isCurrentUserPaid = isUserPaid( state );
 		const theme = getCanonicalTheme( state, siteId, id );
 		const siteIdOrWpcom = siteId || 'wpcom';
 		const error = theme ? false : getThemeRequestErrors( state, id, siteIdOrWpcom );
@@ -859,10 +859,9 @@ export default connect(
 			siteId,
 			siteSlug,
 			backPath,
-			currentUserId,
 			isCurrentUserPaid,
 			isWpcomTheme,
-			isLoggedIn: !! currentUserId,
+			isLoggedIn: isUserLoggedIn( state ),
 			isActive: isThemeActive( state, id, siteId ),
 			isJetpack: isJetpackSite( state, siteId ),
 			isVip: isVipSite( state, siteId ),

@@ -30,6 +30,7 @@ interface Props {
 	onUserRemove: () => void;
 	onUserValueChange: ( field: string, value: string ) => void;
 	onReturnKeyPress: ( event: Event ) => void;
+	selectedDomainName: string;
 	showTrashButton: boolean;
 	user: NewUser;
 }
@@ -44,9 +45,10 @@ const GSuiteNewUser: FunctionComponent< Props > = ( {
 		firstName: { value: firstName, error: firstNameError },
 		lastName: { value: lastName, error: lastNameError },
 		mailBox: { value: mailBox, error: mailBoxError },
-		domain: { value: domain, error: domainError },
+		domain: { error: domainError },
 		password: { value: password, error: passwordError },
 	},
+	selectedDomainName,
 	showTrashButton = true,
 } ) => {
 	const translate = useTranslate();
@@ -70,14 +72,12 @@ const GSuiteNewUser: FunctionComponent< Props > = ( {
 	const hasLastNameError = lastNameFieldTouched && null !== lastNameError;
 	const hasPasswordError = passwordFieldTouched && null !== passwordError;
 
-	const emailAddressPlaceholder = translate( 'Email' );
 	const emailAddressLabel = translate( 'Email address' );
 
 	const renderSingleDomain = () => {
 		return (
 			<LabelWrapper label={ emailAddressLabel }>
 				<FormTextInputWithAffixes
-					placeholder={ emailAddressPlaceholder }
 					value={ mailBox }
 					isError={ hasMailBoxError }
 					onChange={ ( event: ChangeEvent< HTMLInputElement > ) => {
@@ -87,8 +87,8 @@ const GSuiteNewUser: FunctionComponent< Props > = ( {
 						setMailBoxFieldTouched( wasValidated );
 					} }
 					onKeyUp={ onReturnKeyPress }
-					prefix={ isRtl ? `\u200e@${ domain }\u202c` : null }
-					suffix={ isRtl ? null : `\u200e@${ domain }\u202c` }
+					prefix={ isRtl ? `\u200e@${ selectedDomainName }\u202c` : null }
+					suffix={ isRtl ? null : `\u200e@${ selectedDomainName }\u202c` }
 				/>
 			</LabelWrapper>
 		);
@@ -98,7 +98,6 @@ const GSuiteNewUser: FunctionComponent< Props > = ( {
 		return (
 			<LabelWrapper label={ emailAddressLabel }>
 				<FormTextInput
-					placeholder={ emailAddressPlaceholder }
 					value={ mailBox }
 					isError={ hasMailBoxError }
 					onChange={ ( event: ChangeEvent< HTMLInputElement > ) => {
@@ -115,7 +114,7 @@ const GSuiteNewUser: FunctionComponent< Props > = ( {
 					onChange={ ( event ) => {
 						onUserValueChange( 'domain', event.target.value );
 					} }
-					value={ domain }
+					value={ selectedDomainName }
 				/>
 			</LabelWrapper>
 		);
@@ -128,7 +127,6 @@ const GSuiteNewUser: FunctionComponent< Props > = ( {
 					<LabelWrapper label={ translate( 'First name' ) }>
 						<FormTextInput
 							autoFocus={ autoFocus } // eslint-disable-line jsx-a11y/no-autofocus
-							placeholder={ translate( 'First name' ) }
 							value={ firstName }
 							maxLength={ 60 }
 							isError={ hasFirstNameError }
@@ -148,7 +146,6 @@ const GSuiteNewUser: FunctionComponent< Props > = ( {
 				<div className="gsuite-new-user-list__new-user-name-container">
 					<LabelWrapper label={ translate( 'Last name' ) }>
 						<FormTextInput
-							placeholder={ translate( 'Last name' ) }
 							value={ lastName }
 							maxLength={ 60 }
 							isError={ hasLastNameError }
@@ -180,7 +177,6 @@ const GSuiteNewUser: FunctionComponent< Props > = ( {
 						<FormPasswordInput
 							autoCapitalize="off"
 							autoCorrect="off"
-							placeholder={ translate( 'Password' ) }
 							value={ password }
 							maxLength={ 100 }
 							isError={ hasPasswordError }

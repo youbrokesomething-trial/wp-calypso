@@ -1,4 +1,5 @@
 import { isEnabled } from '@automattic/calypso-config';
+import { englishLocales } from '@automattic/i18n-utils';
 import { get, includes, reject } from 'lodash';
 import { addQueryArgs } from 'calypso/lib/url';
 import { generateFlows } from 'calypso/signup/config/flows-pure';
@@ -57,11 +58,11 @@ function getRedirectDestination( dependencies ) {
 	return '/';
 }
 
-function getSignupDestination( { domainItem, siteId, siteSlug } ) {
+function getSignupDestination( { domainItem, siteId, siteSlug }, localeSlug ) {
 	if ( 'no-site' === siteSlug ) {
 		return '/home';
 	}
-	let queryParam = { siteSlug };
+	let queryParam = { siteSlug, loading_ellipsis: 1 };
 	if ( domainItem ) {
 		// If the user is purchasing a domain then the site's primary url might change from
 		// `siteSlug` to something else during the checkout process, which means the
@@ -71,11 +72,12 @@ function getSignupDestination( { domainItem, siteId, siteSlug } ) {
 		queryParam = { siteId };
 	}
 
-	if ( isEnabled( 'signup/hero-flow' ) ) {
+	// Initially ship to English users only, then ship to all users when translations complete
+	if ( isEnabled( 'signup/hero-flow' ) && englishLocales.includes( localeSlug ) ) {
 		return addQueryArgs( queryParam, '/start/setup-site' ) + '&flags=signup/hero-flow'; // we don't want the flag name to be escaped
 	}
 
-	if ( isEnabled( 'signup/setup-site-after-checkout' ) ) {
+	if ( isEnabled( 'signup/setup-site-after-checkout' ) && englishLocales.includes( localeSlug ) ) {
 		return addQueryArgs( queryParam, '/start/setup-site' );
 	}
 
@@ -99,9 +101,17 @@ function getEditorDestination( dependencies ) {
 }
 
 function getDestinationFromIntent( dependencies ) {
-	if ( dependencies.intent === 'write' ) {
-		return `/post/${ dependencies.siteSlug }`;
+	const { intent, startingPoint, siteSlug } = dependencies;
+
+	// If the user skips starting point, redirect them to My Home
+	if ( intent === 'write' && startingPoint !== 'skip-to-my-home' ) {
+		if ( startingPoint !== 'write' ) {
+			window.sessionStorage.setItem( 'wpcom_signup_complete_show_draft_post_modal', '1' );
+		}
+
+		return `/post/${ siteSlug }`;
 	}
+
 	return getChecklistThemeDestination( dependencies );
 }
 
@@ -116,6 +126,10 @@ function getImportDestination( { importSiteEngine, importSiteUrl, siteSlug } ) {
 	);
 }
 
+function getDIFMSignupDestination( { siteSlug } ) {
+	return `/home/${ siteSlug }`;
+}
+
 const flows = generateFlows( {
 	getSiteDestination,
 	getRedirectDestination,
@@ -126,6 +140,7 @@ const flows = generateFlows( {
 	getEditorDestination,
 	getImportDestination,
 	getDestinationFromIntent,
+	getDIFMSignupDestination,
 } );
 
 function removeUserStepFromFlow( flow ) {
@@ -173,9 +188,10 @@ const Flows = {
 	 *
 	 * The returned flow is modified according to several filters.
 	 *
+	 * @typedef {import('../types').Flow} Flow
 	 * @param {string} flowName The name of the flow to return
 	 * @param {boolean} isUserLoggedIn Whether the user is logged in
-	 * @returns {object} A flow object
+	 * @returns {Flow} A flow object
 	 */
 	getFlow( flowName, isUserLoggedIn ) {
 		let flow = Flows.getFlows()[ flowName ];

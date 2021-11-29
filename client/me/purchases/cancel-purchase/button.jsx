@@ -162,17 +162,12 @@ class CancelPurchaseButton extends Component {
 
 				if ( error ) {
 					this.props.errorNotice( error.message );
-
 					this.cancellationFailed();
-
 					return;
 				}
 
-				if ( response.status === 'completed' ) {
-					this.props.refreshSitePlans( purchase.siteId );
-					this.props.clearPurchases();
-				}
-
+				this.props.refreshSitePlans( purchase.siteId );
+				this.props.clearPurchases();
 				this.props.successNotice( response.message, { displayOnNextPage: true } );
 				page.redirect( this.props.purchaseListUrl );
 			}
@@ -197,17 +192,12 @@ class CancelPurchaseButton extends Component {
 
 				if ( error ) {
 					this.props.errorNotice( error.message );
-
 					this.cancellationFailed();
-
 					return;
 				}
 
-				if ( response.status === 'completed' ) {
-					this.props.refreshSitePlans( purchase.siteId );
-					this.props.clearPurchases();
-				}
-
+				this.props.refreshSitePlans( purchase.siteId );
+				this.props.clearPurchases();
 				this.props.successNotice( response.message, { displayOnNextPage: true } );
 				page.redirect( this.props.purchaseListUrl );
 			}

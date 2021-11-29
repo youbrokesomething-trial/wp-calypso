@@ -1,7 +1,15 @@
 const contextLinks = {
+	autorenewal: {
+		link: 'https://wordpress.com/support/manage-purchases/#automatic-renewal',
+		post_id: 111349,
+	},
 	billing: {
 		link: 'https://wordpress.com/support/billing-history/',
 		post_id: 40792,
+	},
+	cancel_purchase: {
+		link: 'https://wordpress.com/support/manage-purchases/#cancel-a-purchase',
+		post_id: 111349,
 	},
 	comments: {
 		link: 'https://wordpress.com/support/comments/',
@@ -25,6 +33,10 @@ const contextLinks = {
 	},
 	export: {
 		link: 'https://wordpress.com/support/export/',
+		post_id: 2087,
+	},
+	'export-media-library': {
+		link: 'https://wordpress.com/support/export/#exporting-the-media-library',
 		post_id: 2087,
 	},
 	'getting-started-video': {
@@ -83,6 +95,10 @@ const contextLinks = {
 	},
 	payment_methods: {
 		link: 'https://wordpress.com/support/payment/',
+		post_id: 76237,
+	},
+	payment_method_all_subscriptions: {
+		link: 'https://wordpress.com/support/payment/#using-a-payment-method-for-all-subscriptions',
 		post_id: 76237,
 	},
 	plugins: {

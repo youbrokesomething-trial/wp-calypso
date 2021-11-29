@@ -38,11 +38,12 @@ import TextControl from 'calypso/components/text-control';
 import wooDnaConfig from 'calypso/jetpack-connect/woo-dna-config';
 import { recordTracksEvent } from 'calypso/lib/analytics/tracks';
 import formState from 'calypso/lib/form-state';
-import { localizeUrl } from 'calypso/lib/i18n-utils';
+import { getLocaleSlug, localizeUrl } from 'calypso/lib/i18n-utils';
 import { isCrowdsignalOAuth2Client, isWooOAuth2Client } from 'calypso/lib/oauth2-clients';
 import { login, lostPassword } from 'calypso/lib/paths';
 import { addQueryArgs } from 'calypso/lib/url';
 import wpcom from 'calypso/lib/wp';
+import { isP2Flow } from 'calypso/signup/utils';
 import { recordTracksEventWithClientId } from 'calypso/state/analytics/actions';
 import { createSocialUserFailed } from 'calypso/state/login/actions';
 import { getCurrentOAuth2Client } from 'calypso/state/oauth2-clients/ui/selectors';
@@ -148,6 +149,7 @@ class SignupForm extends Component {
 		recordTracksEvent( 'calypso_signup_back_link_click' );
 	};
 
+	// @TODO: Please update https://github.com/Automattic/wp-calypso/issues/58453 if you are refactoring away from UNSAFE_* lifecycle methods!
 	UNSAFE_componentWillMount() {
 		debug( 'Mounting the SignupForm React component.' );
 		this.formStateController = new formState.Controller( {
@@ -201,6 +203,7 @@ class SignupForm extends Component {
 		}
 	}
 
+	// @TODO: Please update https://github.com/Automattic/wp-calypso/issues/58453 if you are refactoring away from UNSAFE_* lifecycle methods!
 	UNSAFE_componentWillReceiveProps( nextProps ) {
 		if ( this.props.step && nextProps.step && this.props.step.status !== nextProps.step.status ) {
 			this.maybeRedirectToSocialConnect( nextProps );
@@ -246,87 +249,94 @@ class SignupForm extends Component {
 		] );
 
 		const data = mapKeys( pick( fields, fieldsForValidation ), ( value, key ) => snakeCase( key ) );
-		wpcom.undocumented().validateNewUser( data, ( error, response ) => {
-			if ( this.props.submitting ) {
-				// this is a stale callback, we have already signed up or are logging in
-				return;
-			}
-
-			if ( error || ! response ) {
-				return debug( error || 'User validation failed.' );
-			}
-
-			let messages = response.success
-				? {}
-				: mapKeys( response.messages, ( value, key ) => camelCase( key ) );
-
-			// Prevent "field is empty" error messages from displaying prematurely
-			// before the form has been submitted or before the field has been interacted with (is dirty).
-			if ( ! this.state.submitting ) {
-				messages = this.filterUntouchedFieldErrors( messages );
-			}
-
-			forEach( messages, ( fieldError, field ) => {
-				if ( ! formState.isFieldInvalid( this.state.form, field ) ) {
+		wpcom.req.post(
+			'/signups/validation/user',
+			{
+				...data,
+				locale: getLocaleSlug(),
+			},
+			( error, response ) => {
+				if ( this.props.submitting ) {
+					// this is a stale callback, we have already signed up or are logging in
 					return;
 				}
 
-				if ( field === 'username' && ! includes( usernamesSearched, fields.username ) ) {
-					recordTracksEvent( 'calypso_signup_username_validation_failed', {
-						error: keys( fieldError )[ 0 ],
-						username: fields.username,
-					} );
-
-					timesUsernameValidationFailed++;
+				if ( error || ! response ) {
+					return debug( error || 'User validation failed.' );
 				}
 
-				if ( field === 'password' ) {
-					recordTracksEvent( 'calypso_signup_password_validation_failed', {
-						error: keys( fieldError )[ 0 ],
-					} );
+				let messages = response.success
+					? {}
+					: mapKeys( response.messages, ( value, key ) => camelCase( key ) );
 
-					timesPasswordValidationFailed++;
+				// Prevent "field is empty" error messages from displaying prematurely
+				// before the form has been submitted or before the field has been interacted with (is dirty).
+				if ( ! this.state.submitting ) {
+					messages = this.filterUntouchedFieldErrors( messages );
 				}
-			} );
 
-			if ( fields.email ) {
-				if ( this.props.signupDependencies && this.props.signupDependencies.domainItem ) {
-					const domainInEmail = fields.email.split( '@' )[ 1 ];
-					if ( this.props.signupDependencies.domainItem.meta === domainInEmail ) {
-						// if the user tries to use an email address from the domain they're trying to register,
-						// show an error message.
-						messages = Object.assign( {}, messages, {
-							email: {
-								invalid: this.props.translate(
-									'Use a working email address, so you can receive our messages.'
-								),
-							},
+				forEach( messages, ( fieldError, field ) => {
+					if ( ! formState.isFieldInvalid( this.state.form, field ) ) {
+						return;
+					}
+
+					if ( field === 'username' && ! includes( usernamesSearched, fields.username ) ) {
+						recordTracksEvent( 'calypso_signup_username_validation_failed', {
+							error: keys( fieldError )[ 0 ],
+							username: fields.username,
 						} );
+
+						timesUsernameValidationFailed++;
+					}
+
+					if ( field === 'password' ) {
+						recordTracksEvent( 'calypso_signup_password_validation_failed', {
+							error: keys( fieldError )[ 0 ],
+						} );
+
+						timesPasswordValidationFailed++;
+					}
+				} );
+
+				if ( fields.email ) {
+					if ( this.props.signupDependencies && this.props.signupDependencies.domainItem ) {
+						const domainInEmail = fields.email.split( '@' )[ 1 ];
+						if ( this.props.signupDependencies.domainItem.meta === domainInEmail ) {
+							// if the user tries to use an email address from the domain they're trying to register,
+							// show an error message.
+							messages = Object.assign( {}, messages, {
+								email: {
+									invalid: this.props.translate(
+										'Use a working email address, so you can receive our messages.'
+									),
+								},
+							} );
+						}
 					}
 				}
-			}
 
-			// Catch this early for P2 signup flow.
-			if (
-				this.props.isP2Flow &&
-				fields.username &&
-				fields.password &&
-				fields.username === fields.password
-			) {
-				messages = Object.assign( {}, messages, {
-					password: {
-						invalid: this.props.translate(
-							'Your password cannot be the same as your username. Please pick a different password.'
-						),
-					},
-				} );
-			}
+				// Catch this early for P2 signup flow.
+				if (
+					this.props.isP2Flow &&
+					fields.username &&
+					fields.password &&
+					fields.username === fields.password
+				) {
+					messages = Object.assign( {}, messages, {
+						password: {
+							invalid: this.props.translate(
+								'Your password cannot be the same as your username. Please pick a different password.'
+							),
+						},
+					} );
+				}
 
-			onComplete( error, messages );
-			if ( ! this.state.validationInitialized ) {
-				this.setState( { validationInitialized: true } );
+				onComplete( error, messages );
+				if ( ! this.state.validationInitialized ) {
+					this.setState( { validationInitialized: true } );
+				}
 			}
-		} );
+		);
 	};
 
 	setFormState = ( state ) => {
@@ -423,10 +433,18 @@ class SignupForm extends Component {
 		return 'jetpack-connect' === this.props.sectionName;
 	}
 
+	getLoginLinkFrom() {
+		if ( this.props.isP2Flow ) {
+			return 'p2';
+		}
+
+		return this.props.from;
+	}
+
 	getLoginLink() {
 		return login( {
 			isJetpack: this.isJetpack(),
-			from: this.props.from,
+			from: this.getLoginLinkFrom(),
 			redirectTo: this.props.redirectToAfterLoginUrl,
 			locale: this.props.locale,
 			oauth2ClientId: this.props.oauth2Client && this.props.oauth2Client.id,
@@ -874,7 +892,7 @@ class SignupForm extends Component {
 	footerLink() {
 		const { flowName, showRecaptchaToS, translate } = this.props;
 
-		if ( flowName === 'p2' ) {
+		if ( this.props.isP2Flow ) {
 			return (
 				<div className="signup-form__p2-footer-link">
 					<div>{ this.props.translate( 'Already have a WordPress.com account?' ) }</div>
@@ -1072,7 +1090,8 @@ export default connect(
 		isJetpackWooDnaFlow: wooDnaConfig( getCurrentQueryArguments( state ) ).isWooDnaFlow(),
 		from: get( getCurrentQueryArguments( state ), 'from' ),
 		wccomFrom: get( getCurrentQueryArguments( state ), 'wccom-from' ),
-		isP2Flow: props.flowName === 'p2' || get( getCurrentQueryArguments( state ), 'from' ) === 'p2',
+		isP2Flow:
+			isP2Flow( props.flowName ) || get( getCurrentQueryArguments( state ), 'from' ) === 'p2',
 	} ),
 	{
 		trackLoginMidFlow: () => recordTracksEventWithClientId( 'calypso_signup_login_midflow' ),

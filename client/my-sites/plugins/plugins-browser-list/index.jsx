@@ -1,11 +1,12 @@
-import { Card, Gridicon } from '@automattic/components';
+import { Card } from '@automattic/components';
+import classnames from 'classnames';
 import { localize } from 'i18n-calypso';
 import { times } from 'lodash';
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import SectionHeader from 'calypso/components/section-header';
 import PluginBrowserItem from 'calypso/my-sites/plugins/plugins-browser-item';
-
+import { PluginsBrowserElementVariant } from 'calypso/my-sites/plugins/plugins-browser-item/types';
+import { PluginsBrowserListVariant } from './types';
 import './style.scss';
 
 const DEFAULT_PLACEHOLDER_NUMBER = 6;
@@ -15,11 +16,15 @@ class PluginsBrowserList extends Component {
 
 	static propTypes = {
 		plugins: PropTypes.array.isRequired,
+		variant: PropTypes.oneOf( Object.values( PluginsBrowserListVariant ) ).isRequired,
+		extended: PropTypes.bool,
+	};
+
+	static defaultProps = {
+		variant: PluginsBrowserListVariant.Fixed,
 	};
 
 	renderPluginsViewList() {
-		let emptyCounter = 0;
-
 		const pluginsViewsList = this.props.plugins.map( ( plugin, n ) => {
 			return (
 				<PluginBrowserItem
@@ -28,20 +33,14 @@ class PluginsBrowserList extends Component {
 					plugin={ plugin }
 					currentSites={ this.props.currentSites }
 					listName={ this.props.listName }
+					variant={
+						this.props.extended
+							? PluginsBrowserElementVariant.Extended
+							: PluginsBrowserElementVariant.Compact
+					}
 				/>
 			);
 		} );
-
-		this.renderPlaceholdersViews( pluginsViewsList );
-
-		// We need to complete the list with empty elements to keep the grid drawn.
-		while ( pluginsViewsList.length % 3 !== 0 || pluginsViewsList.length % 2 !== 0 ) {
-			/* eslint-disable wpcalypso/jsx-classname-namespace */
-			pluginsViewsList.push(
-				<div className="plugins-browser-item is-empty" key={ 'empty-item-' + emptyCounter++ } />
-			);
-			/* eslint-enable wpcalypso/jsx-classname-namespace */
-		}
 
 		if ( this.props.size ) {
 			return pluginsViewsList.slice( 0, this.props.size );
@@ -50,49 +49,45 @@ class PluginsBrowserList extends Component {
 		return pluginsViewsList;
 	}
 
-	renderPlaceholdersViews( pluginViewsList ) {
-		if ( ! this.props.showPlaceholders ) {
-			return null;
-		}
-
-		const placeholders = times( this.props.size || DEFAULT_PLACEHOLDER_NUMBER, ( i ) => (
+	renderPlaceholdersViews() {
+		return times( this.props.size || DEFAULT_PLACEHOLDER_NUMBER, ( i ) => (
 			<PluginBrowserItem isPlaceholder key={ 'placeholder-plugin-' + i } />
 		) );
-
-		if ( this.props.paginated || undefined === pluginViewsList ) {
-			return placeholders;
-		}
-
-		// this is for handling infinite scroll
-		return pluginViewsList.concat( placeholders );
 	}
 
 	renderViews() {
-		if ( this.props.plugins.length ) {
-			return this.renderPluginsViewList();
-		} else if ( this.props.showPlaceholders ) {
+		const { plugins, showPlaceholders, variant } = this.props;
+
+		if ( ! plugins.length ) {
 			return this.renderPlaceholdersViews();
 		}
-	}
 
-	renderLink() {
-		if ( this.props.expandedListLink ) {
-			return (
-				<a
-					className="button is-link plugins-browser-list__select-all"
-					href={ this.props.expandedListLink + ( this.props.site || '' ) }
-				>
-					{ this.props.translate( 'See All' ) }
-					<Gridicon icon="chevron-right" size={ 18 } />
-				</a>
-			);
+		switch ( variant ) {
+			case PluginsBrowserListVariant.InfiniteScroll:
+				if ( showPlaceholders ) {
+					return this.renderPluginsViewList().concat( this.renderPlaceholdersViews() );
+				}
+				return this.renderPluginsViewList();
+			case PluginsBrowserListVariant.Paginated:
+				if ( showPlaceholders ) {
+					return this.renderPlaceholdersViews();
+				}
+				return this.renderPluginsViewList();
+			case PluginsBrowserListVariant.Fixed:
+			default:
+				return this.renderPluginsViewList();
 		}
 	}
 
 	render() {
 		return (
 			<div className="plugins-browser-list">
-				<SectionHeader label={ this.props.title }>{ this.renderLink() }</SectionHeader>
+				<div className="plugins-browser-list__header">
+					<div className={ classnames( 'plugins-browser-list__title', this.props.listName ) }>
+						{ this.props.title }
+					</div>
+					<div className="plugins-browser-list__subtitle">{ this.props.subtitle }</div>
+				</div>
 				<Card className="plugins-browser-list__elements">{ this.renderViews() }</Card>
 			</div>
 		);

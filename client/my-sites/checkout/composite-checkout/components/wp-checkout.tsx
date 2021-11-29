@@ -8,21 +8,20 @@ import {
 	CheckoutStepBody,
 	CheckoutSummaryArea as CheckoutSummaryAreaUnstyled,
 	getDefaultPaymentMethodStep,
-	useDispatch,
 	useEvents,
 	useFormStatus,
 	useIsStepActive,
 	useIsStepComplete,
 	usePaymentMethod,
-	useSelect,
 	useTotal,
 	CheckoutErrorBoundary,
 } from '@automattic/composite-checkout';
 import { useShoppingCart } from '@automattic/shopping-cart';
-import { styled } from '@automattic/wpcom-checkout';
+import { styled, getCountryPostalCodeSupport } from '@automattic/wpcom-checkout';
+import { useSelect, useDispatch } from '@wordpress/data';
 import debugFactory from 'debug';
 import { useTranslate } from 'i18n-calypso';
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useDispatch as useReduxDispatch } from 'react-redux';
 import MaterialIcon from 'calypso/components/material-icon';
 import {
@@ -47,9 +46,8 @@ import WPCheckoutOrderSummary from './wp-checkout-order-summary';
 import WPContactForm from './wp-contact-form';
 import WPContactFormSummary from './wp-contact-form-summary';
 import type { OnChangeItemVariant } from '../components/item-variation-picker';
-import type { CountryListItem } from '../types/country-list-item';
 import type { RemoveProductFromCart, RequestCartProduct } from '@automattic/shopping-cart';
-import type { ManagedContactDetails } from '@automattic/wpcom-checkout';
+import type { CountryListItem, ManagedContactDetails } from '@automattic/wpcom-checkout';
 
 const debug = debugFactory( 'calypso:composite-checkout:wp-checkout' );
 
@@ -158,14 +156,13 @@ export default function WPCheckout( {
 	const contactDetailsType = getContactDetailsType( responseCart );
 
 	const contactInfo: ManagedContactDetails = useSelect( ( sel ) =>
-		sel( 'wpcom' ).getContactInfo()
+		sel( 'wpcom-checkout' ).getContactInfo()
 	);
 	const {
-		setSiteId,
 		touchContactFields,
 		applyDomainContactValidationResults,
 		clearDomainContactErrorMessages,
-	} = useDispatch( 'wpcom' );
+	} = useDispatch( 'wpcom-checkout' );
 
 	const [
 		shouldShowContactDetailsValidationErrors,
@@ -200,10 +197,10 @@ export default function WPCheckout( {
 
 	const { formStatus } = useFormStatus();
 
-	// Copy siteId to the store so it can be more easily accessed during payment submission
-	useEffect( () => {
-		setSiteId( siteId );
-	}, [ siteId, setSiteId ] );
+	const arePostalCodesSupported = getCountryPostalCodeSupport(
+		countriesList,
+		contactInfo.countryCode?.value ?? ''
+	);
 
 	const updateCartContactDetails = useCallback( () => {
 		// Update tax location in cart
@@ -225,11 +222,17 @@ export default function WPCheckout( {
 			const subdivisionCode = contactDetailsType === 'tax' ? undefined : contactInfo.state?.value;
 			updateLocation( {
 				countryCode: contactInfo.countryCode?.value,
-				postalCode: contactInfo.postalCode?.value,
+				postalCode: arePostalCodesSupported ? contactInfo.postalCode?.value : '',
 				subdivisionCode,
 			} );
 		}
-	}, [ activePaymentMethod, updateLocation, contactInfo, contactDetailsType ] );
+	}, [
+		activePaymentMethod,
+		updateLocation,
+		contactInfo,
+		contactDetailsType,
+		arePostalCodesSupported,
+	] );
 
 	useUpdateCartLocationWhenPaymentMethodChanges( activePaymentMethod, updateCartContactDetails );
 

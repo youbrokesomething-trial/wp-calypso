@@ -29,6 +29,7 @@ export function generateSteps( {
 	setDesignOnSite = noop,
 	setThemeOnSite = noop,
 	setOptionsOnSite = noop,
+	setIntentOnSite = noop,
 	addDomainToCart = noop,
 	launchSiteApi = noop,
 	isPlanFulfilled = noop,
@@ -183,6 +184,13 @@ export function generateSteps( {
 			dependencies: [ 'siteSlug', 'siteTitle', 'tagline' ],
 			providesDependencies: [ 'siteTitle', 'tagline' ],
 			apiRequestFunction: setOptionsOnSite,
+			delayApiRequestUntilComplete: true,
+		},
+
+		'starting-point': {
+			stepName: 'starting-point',
+			providesDependencies: [ 'startingPoint' ],
+			optionalDependencies: [ 'startingPoint' ],
 		},
 
 		test: {
@@ -317,7 +325,7 @@ export function generateSteps( {
 		},
 		'domain-only': {
 			stepName: 'domain-only',
-			providesDependencies: [ 'siteId', 'siteSlug', 'domainItem' ],
+			providesDependencies: [ 'siteId', 'siteSlug', 'domainItem' ], // note: siteId, siteSlug are not provided when used in domain flow
 			props: {
 				isDomainOnly: true,
 				forceHideFreeDomainExplainerAndStrikeoutUi: true,
@@ -326,7 +334,7 @@ export function generateSteps( {
 
 		'select-domain': {
 			stepName: 'select-domain',
-			providesDependencies: [ 'siteId', 'siteSlug', 'domainItem' ],
+			providesDependencies: [ 'siteId', 'siteSlug', 'domainItem' ], // note: siteId, siteSlug are not provided when used in add-domain flow
 			props: {
 				isAllDomains: true,
 				isDomainOnly: true,
@@ -671,6 +679,10 @@ export function generateSteps( {
 			providesDependencies: [ 'siteSlug' ],
 		},
 
+		'p2-get-started': {
+			stepName: 'p2-get-started',
+		},
+
 		'plans-personal-monthly': {
 			stepName: 'plans-personal-monthly',
 			apiRequestFunction: addPlanToCart,
@@ -718,16 +730,38 @@ export function generateSteps( {
 		intent: {
 			stepName: 'intent',
 			dependencies: [ 'siteSlug' ],
-			providesDependencies: [ 'intent', 'selectedDesign' ],
-			optionalDependencies: [ 'selectedDesign' ],
+			providesDependencies: [ 'intent' ],
+			optionalDependencies: [ 'intent' ],
+			apiRequestFunction: setIntentOnSite,
+			delayApiRequestUntilComplete: true,
 		},
 
 		'design-setup-site': {
 			stepName: 'design-setup-site',
 			apiRequestFunction: setDesignOnSite,
+			delayApiRequestUntilComplete: true,
 			dependencies: [ 'siteSlug' ],
 			providesDependencies: [ 'selectedDesign' ],
 			optionalDependencies: [ 'selectedDesign' ],
+			props: {
+				showDesignPickerCategories: config.isEnabled( 'signup/design-picker-categories' ),
+				showDesignPickerCategoriesAllFilter: config.isEnabled( 'signup/design-picker-categories' ),
+			},
+		},
+		'difm-design-setup-site': {
+			stepName: 'difm-design-setup-site',
+			apiRequestFunction: setDesignOnSite,
+			delayApiRequestUntilComplete: true,
+			dependencies: [ 'siteSlug' ],
+			providesDependencies: [ 'selectedDesign' ],
+			optionalDependencies: [ 'selectedDesign' ],
+			props: {
+				hideSkip: true,
+				hideExternalPreview: true,
+				useDIFMThemes: true,
+				showDesignPickerCategories: true,
+				showDesignPickerCategoriesAllFilter: false,
+			},
 		},
 		'difm-design': {
 			stepName: 'difm-design',
@@ -735,13 +769,53 @@ export function generateSteps( {
 		},
 		'site-info-collection': {
 			stepName: 'site-info-collection',
-			dependencies: [ 'siteSlug', 'selectedDIFMDesign', 'selectedVertical' ],
+			dependencies: [ 'siteSlug', 'selectedDesign' ],
 			providesDependencies: [ 'cartItem' ],
 			apiRequestFunction: addPlanToCart,
 		},
-		'intent-screen': {
-			stepName: 'intent-screen',
-			dependencies: [ 'siteSlug' ],
+
+		// ↓ importer steps
+		list: {
+			stepName: 'list',
+		},
+		capture: {
+			stepName: 'capture',
+		},
+		ready: {
+			stepName: 'ready',
+		},
+		importing: {
+			stepName: 'importing',
+		},
+
+		// Woocommerce Install steps
+		'select-site': {
+			stepName: 'select-site',
+			providesDependencies: [ 'siteId' ],
+			props: {
+				headerText: i18n.translate( 'Select a site' ),
+				subHeaderText: i18n.translate(
+					'Pick which site you would like to use to set up your new store.'
+				),
+			},
+		},
+		confirm: {
+			stepName: 'confirm',
+			props: {
+				headerTitle: i18n.translate( 'Your new store' ),
+				headerDescription: (
+					<>
+						{ i18n.translate( 'This will be your new store domain.' ) }
+						<br />
+						{ i18n.translate( 'You can change it later and get a custom one.' ) }
+					</>
+				),
+			},
+			dependencies: [ 'siteId' ],
+		},
+		transfer: {
+			stepName: 'transfer',
+			dependencies: [ 'siteId' ],
 		},
 	};
 }

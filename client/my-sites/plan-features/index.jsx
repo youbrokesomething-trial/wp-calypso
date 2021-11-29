@@ -319,17 +319,41 @@ export class PlanFeatures extends Component {
 
 		// move any free plan to last place in mobile view
 		let freePlanProperties;
+
+		// move any popular plan to the first place in the mobile view.
+		let popularPlanProperties;
+
+		// move disabled plans to the bottom of the list
+		const disabledPlanProperties = [];
+
 		const reorderedPlans = planProperties.filter( ( properties ) => {
 			if ( isFreePlan( properties.planName ) ) {
 				freePlanProperties = properties;
 				return false;
 			}
+			// remove the popular plan.
+			if ( properties.popular && ! popularPlanProperties ) {
+				popularPlanProperties = properties;
+				return false;
+			}
+
+			// remove disabled plans.
+			if ( properties.isDisabled ) {
+				disabledPlanProperties.push( properties );
+				return false;
+			}
 			return true;
 		} );
+
+		if ( popularPlanProperties ) {
+			reorderedPlans.unshift( popularPlanProperties );
+		}
 
 		if ( freePlanProperties ) {
 			reorderedPlans.push( freePlanProperties );
 		}
+
+		reorderedPlans.push( ...disabledPlanProperties );
 
 		let buttonText = null;
 		let forceDisplayButton = false;
@@ -354,13 +378,19 @@ export class PlanFeatures extends Component {
 				primaryUpgrade,
 				isPlaceholder,
 				hideMonthly,
+				isDisabled,
 			} = properties;
 			const { rawPrice, discountPrice, isMonthlyPlan } = properties;
 			const planDescription = isInVerticalScrollingPlansExperiment
 				? planConstantObj.getShortDescription()
 				: planConstantObj.getDescription();
 			return (
-				<div className="plan-features__mobile-plan" key={ planName }>
+				<div
+					className={ classNames( 'plan-features__mobile-plan', {
+						'plan-features__mobile-disabled': isDisabled,
+					} ) }
+					key={ planName }
+				>
 					<PlanFeaturesHeader
 						availableForPurchase={ availableForPurchase }
 						current={ current }
@@ -382,11 +412,17 @@ export class PlanFeatures extends Component {
 						selectedPlan={ selectedPlan }
 						showPlanCreditsApplied={ true === showPlanCreditsApplied && ! this.hasDiscountNotice() }
 						isMonthlyPlan={ isMonthlyPlan }
+						monthlyDisabled={ this.props.monthlyDisabled }
 						audience={ planConstantObj.getAudience?.() }
 						isInVerticalScrollingPlansExperiment={ isInVerticalScrollingPlansExperiment }
 						isLoggedInMonthlyPricing={ this.props.isLoggedInMonthlyPricing }
 						isInSignup={ isInSignup }
 					/>
+					{ isDisabled && (
+						<p className="plan-features__not-available">
+							This plan is only available with annual billing
+						</p>
+					) }
 					<p className="plan-features__description">{ planDescription }</p>
 					<PlanFeaturesActions
 						availableForPurchase={ availableForPurchase }
@@ -396,6 +432,7 @@ export class PlanFeatures extends Component {
 						className={ getPlanClass( planName ) }
 						current={ current }
 						freePlan={ isFreePlan( planName ) }
+						isDisabled={ isDisabled }
 						isInSignup={ isInSignup }
 						isLandingPage={ isLandingPage }
 						isLaunchPage={ isLaunchPage }
@@ -512,6 +549,7 @@ export class PlanFeatures extends Component {
 						isLoggedInMonthlyPricing={
 							! isInSignup && ! isJetpack && this.props.kindOfPlanTypeSelector === 'interval'
 						}
+						monthlyDisabled={ this.props.monthlyDisabled }
 					/>
 				</th>
 			);
@@ -790,6 +828,7 @@ export class PlanFeatures extends Component {
 		} );
 	}
 
+	// @TODO: Please update https://github.com/Automattic/wp-calypso/issues/58453 if you are refactoring away from UNSAFE_* lifecycle methods!
 	UNSAFE_componentWillMount() {
 		this.props.recordTracksEvent( 'calypso_wp_plans_test_view' );
 		retargetViewPlans();
@@ -816,6 +855,8 @@ PlanFeatures.propTypes = {
 	siteId: PropTypes.number,
 	sitePlan: PropTypes.object,
 	kindOfPlanTypeSelector: PropTypes.oneOf( [ 'interval', 'customer' ] ),
+	monthlyDisabled: PropTypes.bool,
+	intervalType: PropTypes.string,
 };
 
 PlanFeatures.defaultProps = {
@@ -826,6 +867,7 @@ PlanFeatures.defaultProps = {
 	siteId: null,
 	onUpgradeClick: noop,
 	kindOfPlanTypeSelector: 'customer',
+	monthlyDisabled: false,
 };
 
 export const isPrimaryUpgradeByPlanDelta = ( currentPlan, plan ) =>
@@ -865,10 +907,13 @@ const ConnectedPlanFeatures = connect(
 			placeholder,
 			plans,
 			isLandingPage,
+			monthlyDisabled,
 			siteId,
 			visiblePlans,
 			popularPlanSpec,
 			kindOfPlanTypeSelector,
+			intervalType,
+			withScroll,
 		} = ownProps;
 		const selectedSiteId = siteId;
 		const selectedSiteSlug = getSiteSlug( state, selectedSiteId );
@@ -893,18 +938,36 @@ const ConnectedPlanFeatures = connect(
 				const planProductId = planConstantObj.getProductId();
 				const planObject = getPlan( state, planProductId );
 				const isLoadingSitePlans = selectedSiteId && ! sitePlans.hasLoadedFromServer;
-				const showMonthly = ! isMonthly( plan );
+				const isMonthlyPlan = isMonthly( plan );
+				const showMonthly = ! isMonthlyPlan;
 				const availableForPurchase = isInSignup
 					? true
 					: canUpgradeToPlan( state, selectedSiteId, plan ) && canPurchase;
 				const relatedMonthlyPlan = showMonthly
 					? getPlanBySlug( state, getMonthlyPlanByYearly( plan ) )
 					: null;
-				const popular = popularPlanSpec && planMatches( plan, popularPlanSpec );
+
+				// label Personal and Premium monthly plan options as disabled for the monthly disabled test
+				let isDisabled = false;
+				if (
+					! withScroll &&
+					intervalType === 'monthly' &&
+					monthlyDisabled &&
+					( planObject?.product_name_short === 'Premium' ||
+						planObject?.product_name_short === 'Personal' )
+				) {
+					isDisabled = true;
+				}
+
+				// Make Business plan popular for the monthly plans disabled test
+				let popular = popularPlanSpec && planMatches( plan, popularPlanSpec );
+				if ( monthlyDisabled ) {
+					popular = planObject?.product_name_short === ( isMonthlyPlan ? 'Business' : 'Premium' );
+				}
+
 				const newPlan = false;
 				const bestValue = isBestValue( plan ) && ! isPaid;
 				const currentPlan = sitePlan && sitePlan.product_slug;
-				const isMonthlyPlan = isMonthly( plan );
 
 				// Show price divided by 12? Only for non JP plans, or if plan is only available yearly.
 				const showMonthlyPrice = ! isJetpack || isSiteAT || ( ! relatedMonthlyPlan && showMonthly );
@@ -983,12 +1046,14 @@ const ConnectedPlanFeatures = connect(
 					current: isCurrentSitePlan( state, selectedSiteId, planProductId ),
 					discountPrice,
 					features: planFeatures,
+					isDisabled,
 					isLandingPage,
+					isMonthlyPlan,
 					isPlaceholder,
 					planConstantObj,
 					planName: plan,
 					planObject: planObject,
-					popular: popular,
+					popular,
 					productSlug: get( planObject, 'product_slug' ),
 					newPlan: newPlan,
 					bestValue: bestValue,
@@ -1002,7 +1067,6 @@ const ConnectedPlanFeatures = connect(
 					rawPrice,
 					relatedMonthlyPlan,
 					siteIsPrivateAndGoingAtomic,
-					isMonthlyPlan,
 				};
 			} )
 		);
@@ -1041,7 +1105,7 @@ const ConnectedPlanFeatures = connect(
 	{
 		recordTracksEvent,
 	}
-)( withShoppingCart( withCartKey( localize( PlanFeatures ) ) ) );
+)( withCartKey( withShoppingCart( localize( PlanFeatures ) ) ) );
 
 /* eslint-enable */
 

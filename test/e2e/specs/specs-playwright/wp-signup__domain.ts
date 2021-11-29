@@ -1,5 +1,5 @@
 /**
- * @group calypso-release
+ * @group quarantined
  */
 
 import {
@@ -96,7 +96,7 @@ describe( DataHelper.createSuiteTitle( 'Signup: WordPress.com Domain Only' ), fu
 					url: `**/checkout/thank-you/${ selectedDomain }`,
 					timeout: 120 * 1000,
 				} ),
-				cartCheckoutPage.purchase(),
+				cartCheckoutPage.purchase( { timeout: 120 * 1000 } ),
 			] );
 
 			await page.waitForNavigation( {

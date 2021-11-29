@@ -4,8 +4,7 @@
 
 import {
 	DataHelper,
-	LoginFlow,
-	SidebarComponent,
+	LoginPage,
 	SupportComponent,
 	setupHooks,
 	GutenboardingFlow,
@@ -21,32 +20,26 @@ describe( DataHelper.createSuiteTitle( 'Support: Show me where' ), function () {
 
 	describe.each( [
 		{ siteType: 'Simple', user: 'defaultUser' },
-		{ siteType: 'Atomic', user: 'wooCommerceUser' },
+		{ siteType: 'Atomic', user: 'eCommerceUser' },
 	] )( 'Search and view a support article ($siteType)', function ( { user } ) {
 		let supportComponent: SupportComponent;
 		let gutenboardingFlow: GutenboardingFlow;
 
 		it( 'Log in', async function () {
-			const loginFlow = new LoginFlow( page, user );
-			await loginFlow.logIn();
-		} );
-
-		it( 'Navigate to Tools > Marketing', async function () {
-			const sidebarComponent = new SidebarComponent( page );
-			await sidebarComponent.navigate( 'Tools', 'Marketing' );
-		} );
-
-		it( 'Open support popover', async function () {
-			supportComponent = new SupportComponent( page );
-			await supportComponent.openPopover();
+			const loginPage = new LoginPage( page );
+			await loginPage.login( { account: user } );
 		} );
 
 		it( 'Search for help: Create a site', async function () {
+			supportComponent = new SupportComponent( page );
+			await supportComponent.showSupportCard();
 			await supportComponent.search( 'create a site' );
+			const results = await supportComponent.getResults( 'article' );
+			expect( results.length ).toBeGreaterThan( 0 );
 		} );
 
 		it( 'Click on result under Show me where', async function () {
-			await supportComponent.clickResult( 'where', 1 );
+			await Promise.all( [ page.waitForNavigation(), supportComponent.clickResult( 'where', 1 ) ] );
 		} );
 
 		it( 'Gutenboarding flow is started', async function () {
