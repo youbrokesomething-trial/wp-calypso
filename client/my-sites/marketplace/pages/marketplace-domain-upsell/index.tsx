@@ -12,19 +12,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import ExternalLink from 'calypso/components/external-link';
 import Item from 'calypso/layout/masterbar/item';
 import Masterbar from 'calypso/layout/masterbar/masterbar';
-import { fillInSingleCartItemAttributes } from 'calypso/lib/cart-values';
 import { domainRegistration } from 'calypso/lib/cart-values/cart-items';
 import CalypsoShoppingCartProvider from 'calypso/my-sites/checkout/calypso-shopping-cart-provider';
 import useCartKey from 'calypso/my-sites/checkout/use-cart-key';
 import { MarketplaceHeaderTitle } from 'calypso/my-sites/marketplace/components';
-import MarketplaceShoppingCart from 'calypso/my-sites/marketplace/components/marketplace-shopping-cart';
 import {
 	MARKETPLACE_FLOW_ID,
 	ANALYTICS_UI_LOCATION_MARKETPLACE_DOMAIN_SELECTION,
 } from 'calypso/my-sites/marketplace/constants';
 import theme from 'calypso/my-sites/marketplace/theme';
 import { setPrimaryDomainCandidate } from 'calypso/state/marketplace/purchase-flow/actions';
-import { getProductsList } from 'calypso/state/products-list/selectors';
 import getPreviousPath from 'calypso/state/selectors/get-previous-path';
 import { fetchSiteDomains } from 'calypso/state/sites/domains/actions';
 import { getWpComDomainBySiteId } from 'calypso/state/sites/domains/selectors';
@@ -76,7 +73,6 @@ function CalypsoWrappedMarketplaceDomainUpsell(): JSX.Element {
 	const { addProductsToCart, removeProductFromCart } = useShoppingCart( cartKey );
 	const previousPath = useSelector( getPreviousPath );
 	const selectedSite = useSelector( getSelectedSite );
-	const products = useSelector( getProductsList );
 	const domainObject = useSelector( ( state ) =>
 		getWpComDomainBySiteId( state, selectedSite?.ID )
 	);
@@ -86,7 +82,7 @@ function CalypsoWrappedMarketplaceDomainUpsell(): JSX.Element {
 	const translate = useTranslate();
 
 	useEffect( () => {
-		setIsExpandedBasketView( isDesktop() );
+		setIsExpandedBasketView( isDesktop() ?? false );
 		selectedSite && dispatch( fetchSiteDomains( selectedSite.ID ) );
 	}, [ setIsExpandedBasketView, selectedSite, dispatch ] );
 
@@ -118,9 +114,7 @@ function CalypsoWrappedMarketplaceDomainUpsell(): JSX.Element {
 		}
 
 		//Then add the new domain
-		const responseCart = await addProductsToCart( [
-			fillInSingleCartItemAttributes( domainProduct, products ),
-		] );
+		const responseCart = await addProductsToCart( [ domainProduct ] );
 		const productAdded = responseCart.products.find(
 			( { product_slug: added_product_slug } ) => added_product_slug === product_slug
 		);
@@ -182,16 +176,6 @@ function CalypsoWrappedMarketplaceDomainUpsell(): JSX.Element {
 						currentDomain={ selectedDomain }
 						showRecommendationLabel={ false }
 						onUseYourDomainClick={ redirectToUseDomainFlow }
-					/>
-				</div>
-				<div className="marketplace-domain-upsell__shopping-cart-container">
-					<MarketplaceShoppingCart
-						onCheckout={ () =>
-							page( `/checkout${ selectedSite ? `/${ selectedSite.slug }` : '' }` )
-						}
-						selectedDomainProductUUID={ selectedDomainProductUUID }
-						isExpandedBasketView={ isExpandedBasketView }
-						toggleExpandedBasketView={ () => setIsExpandedBasketView( ! isExpandedBasketView ) }
 					/>
 				</div>
 			</div>

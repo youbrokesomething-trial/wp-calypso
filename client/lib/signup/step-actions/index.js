@@ -6,7 +6,6 @@ import debugFactory from 'debug';
 import { defer, difference, get, includes, isEmpty, pick, startsWith } from 'lodash';
 import { recordRegistration } from 'calypso/lib/analytics/signup';
 import { recordTracksEvent } from 'calypso/lib/analytics/tracks';
-import { fillInSingleCartItemAttributes } from 'calypso/lib/cart-values';
 import {
 	updatePrivacyForDomain,
 	supportsPrivacyProtectionPurchase,
@@ -22,10 +21,6 @@ import { cartManagerClient } from 'calypso/my-sites/checkout/cart-manager-client
 import flows from 'calypso/signup/config/flows';
 import steps from 'calypso/signup/config/steps';
 import { getCurrentUserName, isUserLoggedIn } from 'calypso/state/current-user/selectors';
-import {
-	getSelectedImportEngine,
-	getNuxUrlInputValue,
-} from 'calypso/state/importer-nux/temp-selectors';
 import { errorNotice } from 'calypso/state/notices/actions';
 import { getProductsList } from 'calypso/state/products-list/selectors';
 import { getSignupDependencyStore } from 'calypso/state/signup/dependency-store/selectors';
@@ -51,8 +46,7 @@ export function createSiteOrDomain( callback, dependencies, data, reduxStore ) {
 	const reduxState = reduxStore.getState();
 	const domainItem = dependencies.domainItem
 		? prepareItemForAddingToCart(
-				addPrivacyProtectionIfSupported( dependencies.domainItem, reduxState ),
-				reduxState
+				addPrivacyProtectionIfSupported( dependencies.domainItem, reduxState )
 		  )
 		: null;
 
@@ -82,7 +76,7 @@ export function createSiteOrDomain( callback, dependencies, data, reduxStore ) {
 		};
 		const products = [ dependencies.domainItem, dependencies.privacyItem, dependencies.cartItem ]
 			.filter( Boolean )
-			.map( ( item ) => prepareItemForAddingToCart( item, reduxState ) );
+			.map( ( item ) => prepareItemForAddingToCart( item ) );
 
 		cartManagerClient
 			.forCartKey( siteId )
@@ -126,7 +120,6 @@ function getNewSiteParams( {
 	dependencies,
 	flowToCheck,
 	isPurchasingDomainItem,
-	lastKnownFlow,
 	themeSlugWithRepo,
 	siteUrl,
 	state,
@@ -200,14 +193,6 @@ function getNewSiteParams( {
 	} else {
 		newSiteParams.blog_name = siteUrl;
 		newSiteParams.find_available_url = !! isPurchasingDomainItem;
-	}
-
-	if ( 'import' === lastKnownFlow || 'import-onboarding' === lastKnownFlow ) {
-		// If `siteTitle` wasn't inferred by the site detection api, use
-		// the `siteUrl` until an import replaces it with an actual title.
-		newSiteParams.blog_title = siteTitle || siteUrl;
-		newSiteParams.options.nux_import_engine = getSelectedImportEngine( state );
-		newSiteParams.options.nux_import_from_url = getNuxUrlInputValue( state );
 	}
 
 	if ( selectedDesign ) {
@@ -462,7 +447,7 @@ function processItemCart(
 		const reduxState = reduxStore.getState();
 		const newCartItemsToAdd = newCartItems
 			.map( ( item ) => addPrivacyProtectionIfSupported( item, reduxState ) )
-			.map( ( item ) => prepareItemForAddingToCart( item, reduxState ) );
+			.map( ( item ) => prepareItemForAddingToCart( item ) );
 
 		if ( newCartItemsToAdd.length ) {
 			debug( 'adding products to cart', newCartItemsToAdd );
@@ -501,10 +486,9 @@ function processItemCart(
 	}
 }
 
-function prepareItemForAddingToCart( item, state ) {
-	const productsList = getProductsList( state );
+function prepareItemForAddingToCart( item ) {
 	return {
-		...fillInSingleCartItemAttributes( item, productsList ),
+		...item,
 		extra: {
 			...item.extra,
 			context: 'signup',
