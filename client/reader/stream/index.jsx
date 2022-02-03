@@ -24,6 +24,7 @@ import { requestPage, showUpdates } from 'calypso/state/reader/streams/actions';
 import {
 	getStream,
 	getTransformedStreamItems,
+	getTransformedStreamItemsPosts,
 	shouldRequestRecs,
 } from 'calypso/state/reader/streams/selectors';
 import EmptyContent from './empty';
@@ -206,6 +207,7 @@ class ReaderStream extends Component {
 			showSelectedPost( {
 				...args,
 				postKey: postKey.isCombination ? keyForPost( args ) : postKey,
+				postObject: this.props.postsItems[ index ],
 				streamKey,
 			} );
 
@@ -306,6 +308,11 @@ export default connect(
 		return {
 			blockedSites: getBlockedSites( state ),
 			items: getTransformedStreamItems( state, {
+				streamKey,
+				recsStreamKey,
+				shouldCombine: shouldCombineCards,
+			} ),
+			postsItems: getTransformedStreamItemsPosts( state, {
 				streamKey,
 				recsStreamKey,
 				shouldCombine: shouldCombineCards,
