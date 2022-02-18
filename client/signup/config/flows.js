@@ -23,6 +23,19 @@ function getCheckoutUrl( dependencies, localeSlug, flowName ) {
 	);
 }
 
+function getHomeUrl( { domainItem, siteId, siteSlug } ) {
+	// If the user is purchasing a domain then the site's primary url might change from
+	// `siteSlug` to something else during the checkout process, which means the
+	// `/home/${ siteSlug }` url would become invalid. So in this case we use the ID
+	// because we know it won't change depending on whether the user successfully
+	// completes the checkout process or not.
+	if ( domainItem ) {
+		return `/home/${ siteSlug }`;
+	}
+
+	return `/home/${ siteId }`;
+}
+
 function dependenciesContainCartItem( dependencies ) {
 	return dependencies.cartItem || dependencies.domainItem || dependencies.themeItem;
 }
@@ -78,7 +91,7 @@ function getSignupDestination( { domainItem, siteId, siteSlug }, localeSlug ) {
 		return addQueryArgs( queryParam, '/start/setup-site' );
 	}
 
-	return `/home/${ siteSlug }`;
+	return getHomeUrl( { domainItem, siteId, siteSlug } );
 }
 
 function getLaunchDestination( dependencies ) {
