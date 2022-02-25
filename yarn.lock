@@ -311,7 +311,7 @@ __metadata:
     react: ^17.0.2
     react-dom: ^17.0.2
     sass-loader: ^12.1.0
-    style-loader: ^1.2.1
+    style-loader: ^3.3.1
     webpack: ^5.68.0
   peerDependencies:
     "@storybook/react": ^6.4.18
@@ -34836,6 +34836,15 @@ resolve@^2.0.0-next.3:
   peerDependencies:
     webpack: ^4.0.0 || ^5.0.0
   checksum: 6febd1809b4f67a722e4e366fa3b3f8e1083425f7214b7a8962cf53aa7cc9c522623fb55a5e64049e46d637bbbda3b29ebbe14ec9f7652b27345450fcef6ea80
+  languageName: node
+  linkType: hard
+
+"style-loader@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "style-loader@npm:3.3.1"
+  peerDependencies:
+    webpack: ^5.0.0
+  checksum: b325f4ce5d0ee9797878d9db42a5c45ef6d757ad42de85bc550ef90c2fb78b762bbdff3214ddf1f4c8e1307fe1879fc47ea34ee48f8f56191309f8fc28f4d2b6
   languageName: node
   linkType: hard
 
