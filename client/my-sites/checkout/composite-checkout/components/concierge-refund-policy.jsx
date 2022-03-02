@@ -1,9 +1,9 @@
-import { Gridicon } from '@automattic/components';
 import { localize } from 'i18n-calypso';
 import { Component } from 'react';
 import { gaRecordEvent } from 'calypso/lib/analytics/ga';
 import { hasConciergeSession } from 'calypso/lib/cart-values/cart-items';
 import { REFUNDS } from 'calypso/lib/url/support';
+import CheckoutTermsItem from 'calypso/my-sites/checkout/composite-checkout/components/checkout-terms-item';
 
 /* eslint-disable wpcalypso/jsx-classname-namespace */
 
@@ -41,10 +41,9 @@ class ConciergeRefundPolicy extends Component {
 		}
 
 		return (
-			<div className="checkout__concierge-refund-policy">
-				<Gridicon icon="info-outline" size={ 18 } />
-				<p>{ this.renderPolicy() }</p>
-			</div>
+			<CheckoutTermsItem className="checkout__concierge-refund-policy">
+				{ this.renderPolicy() }
+			</CheckoutTermsItem>
 		);
 	}
 }
