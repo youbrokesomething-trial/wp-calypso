@@ -15,8 +15,10 @@ import { ToggleControl } from '@wordpress/components';
 import { useTranslate } from 'i18n-calypso';
 import page from 'page';
 import { useCallback, useState } from 'react';
+import { useIsFetching } from 'react-query';
 import { useSelector, useDispatch } from 'react-redux';
 import EligibilityWarnings from 'calypso/blocks/eligibility-warnings';
+import { getCacheKey as getInstalledPluginsCacheKey } from 'calypso/data/plugins/installed/use-plugins-query';
 import { userCan } from 'calypso/lib/site/utils';
 import { IntervalLength } from 'calypso/my-sites/marketplace/components/billing-interval-switcher/constants';
 import { isCompatiblePlugin } from 'calypso/my-sites/plugins/plugin-compatibility';
@@ -28,7 +30,6 @@ import {
 import { getCurrentUserId } from 'calypso/state/current-user/selectors';
 import { productToBeInstalled } from 'calypso/state/marketplace/purchase-flow/actions';
 import shouldUpgradeCheck from 'calypso/state/marketplace/selectors';
-import { isRequestingForSites } from 'calypso/state/plugins/installed/selectors';
 import { removePluginStatuses } from 'calypso/state/plugins/installed/status/actions';
 import { savePreference } from 'calypso/state/preferences/actions';
 import { getPreference, hasReceivedRemotePreferences } from 'calypso/state/preferences/selectors';
@@ -54,9 +55,7 @@ const PluginDetailsCTA = ( {
 	const pluginSlug = plugin.slug;
 	const translate = useTranslate();
 
-	const requestingPluginsForSites = useSelector( ( state ) =>
-		isRequestingForSites( state, siteIds )
-	);
+	const requestingPluginsForSites = useIsFetching( getInstalledPluginsCacheKey( siteIds ) );
 
 	// Site type
 	const isJetpack = useSelector( ( state ) => isJetpackSite( state, selectedSite?.ID ) );

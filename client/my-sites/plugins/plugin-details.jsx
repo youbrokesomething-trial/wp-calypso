@@ -1,6 +1,7 @@
 import { useBreakpoint } from '@automattic/viewport-react';
 import { useTranslate } from 'i18n-calypso';
 import { useEffect, useMemo } from 'react';
+import { useIsFetching } from 'react-query';
 import { useSelector, useDispatch } from 'react-redux';
 import DocumentHead from 'calypso/components/data/document-head';
 import QueryEligibility from 'calypso/components/data/query-atat-eligibility';
@@ -12,6 +13,7 @@ import MainComponent from 'calypso/components/main';
 import Notice from 'calypso/components/notice';
 import NoticeAction from 'calypso/components/notice/notice-action';
 import { useWPCOMPlugin } from 'calypso/data/marketplace/use-wpcom-plugins-query';
+import { getCacheKey as getInstalledPluginsCacheKey } from 'calypso/data/plugins/installed/use-plugins-query';
 import PageViewTracker from 'calypso/lib/analytics/page-view-tracker';
 import BillingIntervalSwitcher from 'calypso/my-sites/marketplace/components/billing-interval-switcher';
 import PluginNotices from 'calypso/my-sites/plugins/notices';
@@ -38,7 +40,6 @@ import {
 	getPluginOnSites,
 	getSiteObjectsWithPlugin,
 	getSitesWithoutPlugin,
-	isRequestingForSites,
 } from 'calypso/state/plugins/installed/selectors';
 import { fetchPluginData as wporgFetchPluginData } from 'calypso/state/plugins/wporg/actions';
 import {
@@ -74,9 +75,8 @@ function PluginDetails( props ) {
 	const sites = useSelector( getSelectedOrAllSitesWithPlugins );
 	const siteIds = [ ...new Set( siteObjectsToSiteIds( sites ) ) ];
 	const isRequestingSites = useSelector( checkRequestingSites );
-	const requestingPluginsForSites = useSelector( ( state ) =>
-		isRequestingForSites( state, siteIds )
-	);
+	const requestingPluginsForSites = useIsFetching( getInstalledPluginsCacheKey( siteIds ) );
+
 	const analyticsPath = selectedSite ? '/plugins/:plugin/:site' : '/plugins/:plugin';
 
 	// Plugin information.
