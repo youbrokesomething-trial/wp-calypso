@@ -1,7 +1,7 @@
-import config from '@automattic/calypso-config';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import AsyncLoad from 'calypso/components/async-load';
+import isJetpackCloud from 'calypso/lib/jetpack/is-jetpack-cloud';
 import SitePicker from 'calypso/my-sites/picker';
 import isNavUnificationEnabled from 'calypso/state/selectors/is-nav-unification-enabled';
 
@@ -20,13 +20,11 @@ class MySitesNavigation extends Component {
 			siteBasePath: this.props.siteBasePath,
 		};
 
-		let asyncSidebar = null;
-		if ( config.isEnabled( 'jetpack-cloud' ) ) {
+		let asyncSidebar;
+		if ( isJetpackCloud() ) {
 			asyncSidebar = <AsyncLoad require="calypso/components/jetpack/sidebar" { ...asyncProps } />;
-		} else if ( this.props.isNavUnificationEnabled ) {
-			asyncSidebar = <AsyncLoad require="calypso/my-sites/sidebar-unified" { ...asyncProps } />;
 		} else {
-			asyncSidebar = <AsyncLoad require="calypso/my-sites/sidebar" { ...asyncProps } />;
+			asyncSidebar = <AsyncLoad require="calypso/my-sites/sidebar-unified" { ...asyncProps } />;
 		}
 
 		return (
