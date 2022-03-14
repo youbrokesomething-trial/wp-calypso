@@ -27,6 +27,7 @@
 	padding: 79px 32px 32px calc( var( --sidebar-width-max ) + 32px + 1px );
 	box-sizing: border-box;
 	overflow: hidden;
+	min-height: 101vh; // Hack to give JS the chance to trigger the scroll event when the content is short. JS code: client/layout/utils.ts:36.
 
 	// Various screens dont use a sidebar.
 	.has-no-sidebar & {
@@ -107,7 +108,8 @@
 	bottom: 0;
 	color: var( --color-sidebar-text );
 	background: var( --color-sidebar-background );
-	border-right: 1px solid var( --color-sidebar-border );
+	border-right: none;
+	z-index: z-index( 'root', '.layout__secondary' );
 	width: var( --sidebar-width-max );
 	overflow: hidden;
 
@@ -230,7 +232,7 @@
 .layout.focus-sites,
 .layout.focus-sidebar {
 	.layout__primary .main {
-		@include breakpoint-deprecated( '<660px' ) {
+		@media only screen and ( max-width: 660px ) {
 			pointer-events: none;
 			overflow: hidden;
 			max-height: calc( 100vh - 47px );
@@ -266,12 +268,21 @@
 	}
 }
 
+// Workaround to avoid site-selector being transitioning while expanding the sidebar.
+.clear-secondary-layout-transitions {
+	.layout__secondary .site-selector {
+		transition: none;
+		overflow: hidden;
+	}
+}
+
 // Move the secondary element off screen when focused
 // on the content. This only applies to small screens.
 .layout.focus-content {
-	@include breakpoint-deprecated( '<660px' ) {
+	@media only screen and ( max-width: 782px ) {
 		.layout__secondary {
 			transform: translateX( -100% );
+			padding: 71px 24px 24px;
 		}
 	}
 }
@@ -354,5 +365,13 @@
 				display: block;
 			}
 		}
+	}
+}
+
+// Ensure sidebar is visually separate from the content in the Contrast color scheme
+// client/layout/style.scss
+.theme-default.is-contrast {
+	.layout__secondary {
+		outline: 1px solid var( --color-sidebar-border );
 	}
 }

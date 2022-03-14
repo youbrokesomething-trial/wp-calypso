@@ -1,9 +1,7 @@
 import { Component } from 'react';
-import { connect } from 'react-redux';
 import AsyncLoad from 'calypso/components/async-load';
 import isJetpackCloud from 'calypso/lib/jetpack/is-jetpack-cloud';
 import SitePicker from 'calypso/my-sites/picker';
-import isNavUnificationEnabled from 'calypso/state/selectors/is-nav-unification-enabled';
 
 class MySitesNavigation extends Component {
 	static displayName = 'MySitesNavigation';
@@ -40,6 +38,4 @@ class MySitesNavigation extends Component {
 	}
 }
 
-export default connect( ( state ) => ( {
-	isNavUnificationEnabled: isNavUnificationEnabled( state ),
-} ) )( MySitesNavigation );
+export default MySitesNavigation;

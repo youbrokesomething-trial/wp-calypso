@@ -118,6 +118,15 @@
 	}
 }
 
+.site-selector .site.is-highlighted {
+	background-color: var( --color-sidebar-submenu-background );
+
+	.site__domain,
+	.site__title {
+		color: var( --color-sidebar-text );
+	}
+}
+
 // Tweaking secondary Layout styles.
 .layout__secondary .site-selector .site__badge {
 	background: var( --color-sidebar-menu-hover-background );
