@@ -57,6 +57,8 @@ for ( const testRoot of possibleRoots ) {
 
 const baseCommand = `npx --no-install babel --presets="${ babelPresetFile }" --ignore "${ testIgnorePattern }" --extensions='.js,.jsx,.ts,.tsx'`;
 
+console.log( 'Building %s', dir );
+
 if ( transpileAll || transpileESM ) {
 	execSync( `${ baseCommand } -d "${ outputDirESM }" "${ inputDir }"`, {
 		cwd: thisRootActuallyWorks,
