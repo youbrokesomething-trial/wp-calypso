@@ -371,6 +371,18 @@ object RunAllUnitTests : BuildType({
 			"""
 		}
 		bashNodeScript {
+			name = "Ensure prepack works correctly"
+			executionMode = BuildStep.ExecutionMode.RUN_ON_FAILURE
+			scriptContent = """
+				unset NODE_ENV
+				unset CALYPSO_ENV
+
+				# Tests that yarn run prepack works. This tests the npm publish flow slightly.
+				yarn workspaces foreach run prepare
+				yarn workspaces --parallel run prepack
+			"""
+		}
+		bashNodeScript {
 			name = "Run unit tests for build tools"
 			executionMode = BuildStep.ExecutionMode.RUN_ON_FAILURE
 			scriptContent = """
