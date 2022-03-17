@@ -30,7 +30,7 @@
 	],
 	"scripts": {
 		"clean": "rm -rf dist",
-		"build": "transpile && copy-assets",
+		"build": "run -T transpile && copy-assets",
 		"prepack": "yarn run clean && yarn run build"
 	},
 	"dependencies": {
