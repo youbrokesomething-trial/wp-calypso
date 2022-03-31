@@ -397,6 +397,7 @@ const sections = [
 		module: 'calypso/gutenberg/editor',
 		group: 'gutenberg',
 		trackLoadPerformance: true,
+		enableLoggedOut: true,
 	},
 	{
 		name: 'import',
