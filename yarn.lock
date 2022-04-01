@@ -169,7 +169,7 @@ __metadata:
     css-loader: ^6.5.1
     css-minimizer-webpack-plugin: ^3.2.0
     duplicate-package-checker-webpack-plugin: ^3.0.0
-    mini-css-extract-plugin: ^1.6.2
+    mini-css-extract-plugin: ^2.6.0
     postcss-custom-properties: ^11.0.0
     postcss-loader: ^6.2.0
     recursive-copy: ^2.0.10
@@ -26304,14 +26304,14 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"mini-css-extract-plugin@npm:^2.1.0":
-  version: 2.3.0
-  resolution: "mini-css-extract-plugin@npm:2.3.0"
+"mini-css-extract-plugin@npm:^2.1.0, mini-css-extract-plugin@npm:^2.6.0":
+  version: 2.6.0
+  resolution: "mini-css-extract-plugin@npm:2.6.0"
   dependencies:
-    schema-utils: ^3.1.0
+    schema-utils: ^4.0.0
   peerDependencies:
     webpack: ^5.0.0
-  checksum: d85b0cce58b824740bdd3470d8da100196802f5816c7a60939bd19b418cc06a4b8db8aef2f0ecb9b70051b251eb1a89dc036211a764059d9dcd181b1c2529f73
+  checksum: 1d13b97d03cbcc083bbda474b5f18777664168ddd9aba186b3e9f31709205bdf263dded907af4fc82bce0ab88ba8cbee4778a2d6c6b24fca8d82a227afa90dc9
   languageName: node
   linkType: hard
 
