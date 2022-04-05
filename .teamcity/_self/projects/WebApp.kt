@@ -378,8 +378,8 @@ object RunAllUnitTests : BuildType({
 				unset CALYPSO_ENV
 
 				# Tests that yarn run prepack works. This tests the npm publish flow slightly.
-				yarn workspaces foreach run prepare
-				yarn workspaces --parallel run prepack
+				yarn workspaces foreach --verbose run prepare
+				yarn workspaces foreach --verbose --parallel run prepack
 			"""
 		}
 		bashNodeScript {
