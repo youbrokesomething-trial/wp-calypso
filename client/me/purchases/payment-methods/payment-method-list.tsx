@@ -48,23 +48,29 @@ class PaymentMethodList extends Component< PaymentMethodListProps > {
 			);
 		}
 
-		return paymentMethods.map( ( paymentMethod ) => {
-			return (
-				<PaymentMethod key={ paymentMethod.stored_details_id }>
-					<PaymentMethodDetails
-						lastDigits={ paymentMethod.card }
-						email={ paymentMethod.email }
-						cardType={ paymentMethod.card_type || '' }
-						paymentPartner={ paymentMethod.payment_partner }
-						name={ paymentMethod.name }
-						expiry={ paymentMethod.expiry }
-						isExpired={ paymentMethod.is_expired }
-					/>
-					{ isCreditCard( paymentMethod ) && <PaymentMethodBackupToggle card={ paymentMethod } /> }
-					<PaymentMethodDelete card={ paymentMethod } />
-				</PaymentMethod>
-			);
-		} );
+		return (
+			<div className="payment-method-list__payment-methods">
+				{ paymentMethods.map( ( paymentMethod ) => {
+					return (
+						<PaymentMethod key={ paymentMethod.stored_details_id }>
+							<PaymentMethodDetails
+								lastDigits={ paymentMethod.card }
+								email={ paymentMethod.email }
+								cardType={ paymentMethod.card_type || '' }
+								paymentPartner={ paymentMethod.payment_partner }
+								name={ paymentMethod.name }
+								expiry={ paymentMethod.expiry }
+								isExpired={ paymentMethod.is_expired }
+							/>
+							{ isCreditCard( paymentMethod ) && (
+								<PaymentMethodBackupToggle card={ paymentMethod } />
+							) }
+							<PaymentMethodDelete card={ paymentMethod } />
+						</PaymentMethod>
+					);
+				} ) }
+			</div>
+		);
 	}
 
 	goToAddPaymentMethod = () => {

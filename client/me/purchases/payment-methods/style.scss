@@ -1,5 +1,12 @@
-.payment-method__wrapper {
-	margin-bottom: 0;
+.payment-method-list__payment-methods {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-top: 12px;
+}
+
+.payment-method-list__payment-methods > div {
+	width: 100%;
 }
 
 .payment-method-list__loader {
