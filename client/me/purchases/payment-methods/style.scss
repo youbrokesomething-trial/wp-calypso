@@ -106,9 +106,13 @@
 	}
 }
 
+.payment-method__wrapper {
+	margin-bottom: 0;
+}
+
 /* Jetpack cloud overwrites */
 
-.payment-method__wrapper.is-jetpack-cloud {
+.payment-method__wrapper--jetpack-cloud {
 	.components-checkbox-control__input[type='checkbox']:checked {
 		background-color: var( --studio-jetpack-green-50 );
 	}

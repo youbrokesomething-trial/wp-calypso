@@ -6,17 +6,13 @@ import { connect } from 'react-redux';
 import QueryStoredCards from 'calypso/components/data/query-stored-cards';
 import SectionHeader from 'calypso/components/section-header';
 import { recordTracksEvent } from 'calypso/lib/analytics/tracks';
-import { isCreditCard } from 'calypso/lib/checkout/payment-methods';
 import PaymentMethod from 'calypso/me/purchases/payment-methods/payment-method';
-import PaymentMethodBackupToggle from 'calypso/me/purchases/payment-methods/payment-method-backup-toggle';
-import PaymentMethodDelete from 'calypso/me/purchases/payment-methods/payment-method-delete';
 import {
 	getAllStoredCards,
 	getUniquePaymentAgreements,
 	hasLoadedStoredCardsFromServer,
 	isFetchingStoredCards,
 } from 'calypso/state/stored-cards/selectors';
-import PaymentMethodDetails from './payment-method-details';
 import type { PaymentMethod as PaymentMethodType } from 'calypso/lib/checkout/payment-methods';
 import type { StoredCard } from 'calypso/my-sites/checkout/composite-checkout/types/stored-cards';
 
@@ -52,21 +48,10 @@ class PaymentMethodList extends Component< PaymentMethodListProps > {
 			<div className="payment-method-list__payment-methods">
 				{ paymentMethods.map( ( paymentMethod ) => {
 					return (
-						<PaymentMethod key={ paymentMethod.stored_details_id }>
-							<PaymentMethodDetails
-								lastDigits={ paymentMethod.card }
-								email={ paymentMethod.email }
-								cardType={ paymentMethod.card_type || '' }
-								paymentPartner={ paymentMethod.payment_partner }
-								name={ paymentMethod.name }
-								expiry={ paymentMethod.expiry }
-								isExpired={ paymentMethod.is_expired }
-							/>
-							{ isCreditCard( paymentMethod ) && (
-								<PaymentMethodBackupToggle card={ paymentMethod } />
-							) }
-							<PaymentMethodDelete card={ paymentMethod } />
-						</PaymentMethod>
+						<PaymentMethod
+							paymentMethod={ paymentMethod }
+							key={ paymentMethod.stored_details_id }
+						/>
 					);
 				} ) }
 			</div>
