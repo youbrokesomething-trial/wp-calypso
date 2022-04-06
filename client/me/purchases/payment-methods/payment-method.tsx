@@ -6,6 +6,7 @@ import { isCreditCard } from 'calypso/lib/checkout/payment-methods';
 import isJetpackCloud from 'calypso/lib/jetpack/is-jetpack-cloud';
 import PaymentMethodBackupToggle from 'calypso/me/purchases/payment-methods/payment-method-backup-toggle';
 import PaymentMethodDelete from 'calypso/me/purchases/payment-methods/payment-method-delete';
+import { TaxInfoArea } from 'calypso/my-sites/checkout/composite-checkout/components/payment-method-tax-info';
 import PaymentMethodDetails from './payment-method-details';
 import type { PaymentMethod as PaymentMethodType } from 'calypso/lib/checkout/payment-methods';
 
@@ -40,6 +41,12 @@ export default function PaymentMethod( { paymentMethod }: { paymentMethod: Payme
 			{ isEditing && (
 				<Card>
 					<div className="payment-method__edit-payment-method">
+						<TaxInfoArea
+							last4={ paymentMethod.card }
+							brand={ paymentMethod.card_type }
+							storedDetailsId={ paymentMethod.stored_details_id }
+							paymentPartnerProcessorId={ paymentMethod.payment_partner }
+						/>
 						<PaymentMethodDelete card={ paymentMethod } />
 					</div>
 				</Card>

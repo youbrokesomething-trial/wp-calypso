@@ -1,4 +1,5 @@
 import { Button, CompactCard } from '@automattic/components';
+import { CheckoutProvider } from '@automattic/composite-checkout';
 import { localize, translate } from 'i18n-calypso';
 import page from 'page';
 import { Component } from 'react';
@@ -46,14 +47,16 @@ class PaymentMethodList extends Component< PaymentMethodListProps > {
 
 		return (
 			<div className="payment-method-list__payment-methods">
-				{ paymentMethods.map( ( paymentMethod ) => {
-					return (
-						<PaymentMethod
-							paymentMethod={ paymentMethod }
-							key={ paymentMethod.stored_details_id }
-						/>
-					);
-				} ) }
+				<CheckoutProvider paymentMethods={ [] } paymentProcessors={ {} }>
+					{ paymentMethods.map( ( paymentMethod ) => {
+						return (
+							<PaymentMethod
+								paymentMethod={ paymentMethod }
+								key={ paymentMethod.stored_details_id }
+							/>
+						);
+					} ) }
+				</CheckoutProvider>
 			</div>
 		);
 	}
