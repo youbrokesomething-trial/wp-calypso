@@ -110,6 +110,12 @@
 	margin-bottom: 0;
 }
 
+.payment-method__edit-payment-method {
+	margin-bottom: 0;
+	display: flex;
+	justify-content: space-evenly;
+}
+
 /* Jetpack cloud overwrites */
 
 .payment-method__wrapper--jetpack-cloud {
