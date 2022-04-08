@@ -1,7 +1,5 @@
-import { Card, Button } from '@automattic/components';
 import classNames from 'classnames';
-import { useTranslate } from 'i18n-calypso';
-import { useState } from 'react';
+import FoldableCard from 'calypso/components/foldable-card';
 import { isCreditCard } from 'calypso/lib/checkout/payment-methods';
 import isJetpackCloud from 'calypso/lib/jetpack/is-jetpack-cloud';
 import PaymentMethodBackupToggle from 'calypso/me/purchases/payment-methods/payment-method-backup-toggle';
@@ -13,44 +11,39 @@ import type { PaymentMethod as PaymentMethodType } from 'calypso/lib/checkout/pa
 import 'calypso/me/purchases/payment-methods/style.scss';
 
 export default function PaymentMethod( { paymentMethod }: { paymentMethod: PaymentMethodType } ) {
-	const [ isEditing, setIsEditing ] = useState( false );
-	const translate = useTranslate();
 	return (
 		<div>
-			<Card
+			<FoldableCard
 				className={ classNames( 'payment-method__wrapper', {
 					'payment-method__wrapper--jetpack-cloud': isJetpackCloud(),
 				} ) }
-			>
-				<div className="payment-method">
-					<PaymentMethodDetails
-						lastDigits={ paymentMethod.card }
-						email={ paymentMethod.email }
-						cardType={ paymentMethod.card_type || '' }
-						paymentPartner={ paymentMethod.payment_partner }
-						name={ paymentMethod.name }
-						expiry={ paymentMethod.expiry }
-						isExpired={ paymentMethod.is_expired }
-					/>
-					{ isCreditCard( paymentMethod ) && <PaymentMethodBackupToggle card={ paymentMethod } /> }
-					<Button onClick={ () => setIsEditing( ( prev ) => ! prev ) }>
-						{ translate( 'Edit' ) }
-					</Button>
-				</div>
-			</Card>
-			{ isEditing && (
-				<Card>
-					<div className="payment-method__edit-payment-method">
-						<TaxInfoArea
-							last4={ paymentMethod.card }
-							brand={ paymentMethod.card_type }
-							storedDetailsId={ paymentMethod.stored_details_id }
-							paymentPartnerProcessorId={ paymentMethod.payment_partner }
+				header={
+					<div className="payment-method">
+						<PaymentMethodDetails
+							lastDigits={ paymentMethod.card }
+							email={ paymentMethod.email }
+							cardType={ paymentMethod.card_type || '' }
+							paymentPartner={ paymentMethod.payment_partner }
+							name={ paymentMethod.name }
+							expiry={ paymentMethod.expiry }
+							isExpired={ paymentMethod.is_expired }
 						/>
-						<PaymentMethodDelete card={ paymentMethod } />
+						{ isCreditCard( paymentMethod ) && (
+							<PaymentMethodBackupToggle card={ paymentMethod } />
+						) }
 					</div>
-				</Card>
-			) }
+				}
+			>
+				<div className="payment-method__edit-payment-method">
+					<TaxInfoArea
+						last4={ paymentMethod.card }
+						brand={ paymentMethod.card_type }
+						storedDetailsId={ paymentMethod.stored_details_id }
+						paymentPartnerProcessorId={ paymentMethod.payment_partner }
+					/>
+					<PaymentMethodDelete card={ paymentMethod } />
+				</div>
+			</FoldableCard>
 		</div>
 	);
 }
