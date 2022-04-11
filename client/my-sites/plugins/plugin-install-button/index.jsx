@@ -311,7 +311,6 @@ PluginInstallButton.propTypes = {
 	plugin: PropTypes.object.isRequired,
 	isEmbed: PropTypes.bool,
 	isInstalling: PropTypes.bool,
-	isMock: PropTypes.bool,
 	disabled: PropTypes.bool,
 };
 
