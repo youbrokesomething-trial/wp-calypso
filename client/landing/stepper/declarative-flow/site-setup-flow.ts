@@ -31,6 +31,7 @@ export const siteSetupFlow: Flow = {
 			'error',
 			'wooTransfer',
 			'wooInstallPlugins',
+			'wooConfirm',
 		] as StepPath[];
 	},
 
