@@ -1,5 +1,5 @@
 import config from '@automattic/calypso-config';
-import { Onboard, Site, ProductsList } from '@automattic/data-stores';
+import { Onboard, Site, ProductsList, AutomatedTransferEligibility } from '@automattic/data-stores';
 
 export const ONBOARD_STORE = Onboard.register();
 export const SITE_STORE = Site.register( {
@@ -7,3 +7,4 @@ export const SITE_STORE = Site.register( {
 	client_secret: config( 'wpcom_signup_key' ),
 } );
 export const PRODUCTS_LIST_STORE = ProductsList.register();
+export const WOOCOMMERCE_ELIGIBILITY_STORE = AutomatedTransferEligibility.register();
