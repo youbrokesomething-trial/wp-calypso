@@ -7,6 +7,9 @@
 
 .theme-jetpack-cloud,
 .color-scheme.is-jetpack-cloud {
+	// Sidebar size limits
+	--sidebar-width-min: 228px;
+
 	// Masterbar
 	@media only screen and ( min-width: 782px ) {
 		--masterbar-height: 46px;
@@ -282,6 +285,10 @@ html {
 		font-weight: 400;
 		line-height: inherit;
 	}
+}
+
+.layout__content {
+	min-height: inherit;
 }
 
 .layout__secondary {

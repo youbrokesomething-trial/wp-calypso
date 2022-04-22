@@ -1,51 +1,11 @@
-// The following changes should be merged in their respective files before nav unification goes to production
 @import url( '//s1.wp.com/wp-includes/css/dashicons.css?v=20150727' );
-
-// Override Global Vars
-.theme-default {
-	// client/assets/stylesheets/shared/_variables.scss
-	--sidebar-width-max: 272px;
-	--sidebar-width-min: 272px;
-
-	--color-sidebar-background: #23282d;
-	--color-sidebar-background-rgb: 35, 40, 45;
-	--color-sidebar-menu-hover-background: #1a1e23;
-	--color-sidebar-menu-hover-background-rgb: rgb( var( --color-sidebar-menu-hover-background ) );
-	--color-sidebar-menu-hover-text: #00b9eb;
-	--color-sidebar-menu-selected-background: #0073aa;
-	--color-sidebar-menu-selected-text: white;
-	--color-sidebar-border: #333333;
-	--color-sidebar-text: #eee;
-	--color-sidebar-text-rgb: 238, 238, 238;
-	--color-sidebar-text-alternative: #a2aab2;
-	--color-sidebar-gridicon-fill: #a2aab2;
-	--color-sidebar-notice-background: #3c434a;
-
-	--color-sidebar-submenu-background: #32373c;
-	--color-sidebar-submenu-text: #b4b9be;
-	--color-sidebar-submenu-hover-background: transparent;
-	--color-sidebar-submenu-hover-text: #00b9eb;
-	--color-sidebar-submenu-selected-background: transparent;
-	--color-sidebar-submenu-selected-text: white;
-}
 
 // Local Vars
 $sidebar-item-padding: 8px 0;
 $font-size: rem( 14px );
 
-.clear-secondary-layout-transitions {
-	// client/layout/style.scss | Workaround to avoid site-selector being transitioning while expanding the sidebar (client/my-sites/sidebar-unified/index.jsx).
-	.layout__secondary .site-selector {
-		transition: none;
-		overflow: hidden;
-	}
-}
-
 .theme-default {
-	// client/layout/style.scss
-	.layout__content {
-		min-height: 101vh; // Hack to give JS the chance to trigger the scroll event when the content is short. JS code: client/layout/utils.ts:36.
-	}
+
 
 	// client/layout/sidebar/style.scss
 	.sidebar {

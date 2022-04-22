@@ -270,20 +270,20 @@
 	--color-jetpack-masterbar-item-hover-background: var( --studio-gray-5 );
 	--color-jetpack-masterbar-item-active-background: var( --studio-gray-20 );
 
-	--color-sidebar-background: var( --color-surface );
-	--color-sidebar-background-rgb: var( --studio-white-rgb );
-	--color-sidebar-border: var( --studio-gray-5 );
-	--color-sidebar-text: var( --studio-gray-80 );
-	--color-sidebar-text-rgb: var( --studio-gray-80-rgb );
-	--color-sidebar-text-alternative: var( --studio-gray-50 );
-	--color-sidebar-gridicon-fill: var( --studio-gray-50 );
-	--color-sidebar-menu-selected-background: var( --studio-blue-5 );
+	--color-sidebar-background: #23282d;
+	--color-sidebar-background-rgb: 35, 40, 45;
+	--color-sidebar-border: #333333;
+	--color-sidebar-text: #eee;
+	--color-sidebar-text-rgb: 238, 238, 238;
+	--color-sidebar-text-alternative: #a2aab2;
+	--color-sidebar-gridicon-fill: #a2aab2;
+	--color-sidebar-menu-selected-background: #0073aa;
 	--color-sidebar-menu-selected-background-rgb: var( --studio-blue-5-rgb );
-	--color-sidebar-menu-selected-text: var( --studio-blue-70 );
+	--color-sidebar-menu-selected-text: white;
 	--color-sidebar-menu-selected-text-rgb: var( --studio-blue-70-rgb );
-	--color-sidebar-menu-hover-background: var( --studio-gray-5 );
-	--color-sidebar-menu-hover-background-rgb: var( --studio-gray-5-rgb );
-	--color-sidebar-menu-hover-text: var( --studio-gray-90 );
+	--color-sidebar-menu-hover-background: #1a1e23;
+	--color-sidebar-menu-hover-background-rgb: rgb( var( --color-sidebar-menu-hover-background ) );
+	--color-sidebar-menu-hover-text: #00b9eb;
 
 	--color-jetpack-onboarding-text: var( --studio-white );
 	--color-jetpack-onboarding-text-rgb: var( --studio-white-rgb );
@@ -339,8 +339,10 @@
 	--theme-notification-color: #d54e21; /* Direct from wp-admin */
 
 	/* Sidebar Submenu - Nav Unification */
-	--color-sidebar-submenu-background: var( --studio-blue-0 );
-	--color-sidebar-submenu-text: var( --studio-blue-70 );
-	--color-sidebar-submenu-hover-text: var( --color-accent );
-	--color-sidebar-submenu-selected-text: var( --color-accent );
+	--color-sidebar-submenu-background: #32373c;
+	--color-sidebar-submenu-text: #b4b9be;
+	--color-sidebar-submenu-hover-text: #00b9eb;
+	--color-sidebar-submenu-hover-background: transparent;
+	--color-sidebar-submenu-selected-text: white;
+	--color-sidebar-submenu-selected-background: transparent;
 }
