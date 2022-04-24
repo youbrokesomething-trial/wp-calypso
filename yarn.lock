@@ -165,7 +165,7 @@ __metadata:
     "@wordpress/dependency-extraction-webpack-plugin": ^3.2.1
     autoprefixer: ^10.2.5
     babel-loader: ^8.2.3
-    browserslist: ^4.8.2
+    browserslist: ^4.20.3
     css-loader: ^6.5.1
     css-minimizer-webpack-plugin: ^3.2.0
     duplicate-package-checker-webpack-plugin: ^3.0.0
@@ -12232,18 +12232,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browserslist@npm:^4.0.0, browserslist@npm:^4.12.0, browserslist@npm:^4.14.5, browserslist@npm:^4.16.0, browserslist@npm:^4.16.3, browserslist@npm:^4.16.6, browserslist@npm:^4.17.5, browserslist@npm:^4.17.6, browserslist@npm:^4.19.1, browserslist@npm:^4.8.2":
-  version: 4.20.0
-  resolution: "browserslist@npm:4.20.0"
+"browserslist@npm:^4.0.0, browserslist@npm:^4.12.0, browserslist@npm:^4.14.5, browserslist@npm:^4.16.0, browserslist@npm:^4.16.3, browserslist@npm:^4.16.6, browserslist@npm:^4.17.5, browserslist@npm:^4.17.6, browserslist@npm:^4.19.1, browserslist@npm:^4.20.3":
+  version: 4.20.3
+  resolution: "browserslist@npm:4.20.3"
   dependencies:
-    caniuse-lite: ^1.0.30001313
-    electron-to-chromium: ^1.4.76
+    caniuse-lite: ^1.0.30001332
+    electron-to-chromium: ^1.4.118
     escalade: ^3.1.1
-    node-releases: ^2.0.2
+    node-releases: ^2.0.3
     picocolors: ^1.0.0
   bin:
     browserslist: cli.js
-  checksum: f701bc14aa2c7e21d4b69e8648d11d2359255d483385be470ac17da46181793fe31c8817fc1f6eca0cd07b24bbfff3676dc8ffc1b1ef3b3a7670831b58aaa5b2
+  checksum: 6e333d8c846b46fe86246129ad4eab70b5678657ddaf84f149073914f36a9aa4e510b645b1b338f2545379adaf4c4ecbbac557118f9cef52b3d6110424d29333
   languageName: node
   linkType: hard
 
@@ -12983,10 +12983,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001196, caniuse-lite@npm:^1.0.30001313":
-  version: 1.0.30001314
-  resolution: "caniuse-lite@npm:1.0.30001314"
-  checksum: f5f338fa2aa71646b0c83c9e43bc80246c0a2c041ae050f81dcec635d46ef29c44d8d26bde5bfd30974933bae2b40b434cdc8b7d0da057eba06dae3072df24d8
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001196, caniuse-lite@npm:^1.0.30001332":
+  version: 1.0.30001332
+  resolution: "caniuse-lite@npm:1.0.30001332"
+  checksum: e6c22bb34780a18e67d2e5be0c767181f28319d5523bd9ce995fd68bb003822ddc9638a830ce4047155ca16565838a3ccc2fe763e715111d748a62864057b3be
   languageName: node
   linkType: hard
 
@@ -16479,10 +16479,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-to-chromium@npm:^1.4.76":
-  version: 1.4.77
-  resolution: "electron-to-chromium@npm:1.4.77"
-  checksum: 777ca64e1ab1241f8036f353320daee925e713efb39bcf175444149dbce80c7f335a451b426de3cdd610a53198e021f6ac978d60662128d90a376d86ecfc9afa
+"electron-to-chromium@npm:^1.4.118":
+  version: 1.4.118
+  resolution: "electron-to-chromium@npm:1.4.118"
+  checksum: 389f9c0c671f357e1c4db255d35832e8ec97cc5c5316adb2da40735f2c77e053dab8848c0db933cae80955081dd03a378904042eef64baff21452fd5f3b862f0
   languageName: node
   linkType: hard
 
@@ -27063,10 +27063,10 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"node-releases@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "node-releases@npm:2.0.2"
-  checksum: d4f0f090670c02c3537b38c43ff39216be0addd75908cd7027bfff30a3ce8ac9b1db0c802c60756d1e79c33b8154dd0c9f2e5bbfb0deaaf39563299d52458ae9
+"node-releases@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "node-releases@npm:2.0.3"
+  checksum: 4703530f5bc19c9fd61024740bbb5033426b12b56dfea207cc350cdeb231b94af542ffaf8466be8a38aaccbc391e8d8a7e285a3c6713f106fb67b18b8e20abb9
   languageName: node
   linkType: hard
 
@@ -38263,7 +38263,7 @@ testarmada-magellan@11.0.10:
     "@wordpress/url": 3.3.2
     babel-loader: ^8.2.3
     backstopjs: 5.1.0
-    browserslist: ^4.16.0
+    browserslist: ^4.20.3
     bunyan: ^1.8.15
     calypso: "workspace:^"
     calypso-codemods: "workspace:^"
