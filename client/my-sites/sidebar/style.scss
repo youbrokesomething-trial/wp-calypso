@@ -9,15 +9,7 @@ $font-size: rem( 14px );
 
 	// client/layout/sidebar/style.scss
 	.sidebar {
-		position: relative;
-		background-color: var( --color-sidebar-background );
-		padding-bottom: 12px;
-		min-height: calc( 100vh - var( --masterbar-height ) );
-		box-sizing: border-box;
 
-		.sidebar__separator {
-			margin: 0 0 11px;
-		}
 
 		.site__content {
 			padding: 10px 0 10px 8px;
@@ -28,117 +20,12 @@ $font-size: rem( 14px );
 			top: 10px;
 		}
 
-		.sidebar__heading,
-		.sidebar__menu-link {
-			position: relative;
-			font-size: $font-size;
-			font-weight: 400;
-			line-height: 1.3;
-			padding: 0 0 0 8px;
-			color: var( --color-sidebar-text );
-			align-items: center;
-
-			&::after {
-				content: ' ';
-				display: none;
-				z-index: 1;
-				position: absolute;
-				top: 50%;
-				right: 0;
-				width: 0;
-				height: 0;
-				margin-top: -8px;
-				border: solid 8px transparent;
-				border-right-color: var( --color-surface-backdrop );
-				pointer-events: none;
-			}
-		}
-
-		// Apply hover and focus effects only to tabbable items assuming they are links.
-		.sidebar__heading:not( [tabindex='-1'] ),
-		.sidebar__menu-link {
-			&:hover,
-			&:focus {
-				background-color: var( --color-sidebar-menu-hover-background );
-				color: var( --color-sidebar-menu-hover-text );
-				box-shadow: inset 4px 0 0 0 currentColor;
-				transition: box-shadow 0.1s linear;
-			}
-		}
-
-		.sidebar__expandable-title,
-		.sidebar__menu-link-text {
-			padding: $sidebar-item-padding;
-			max-height: 34px;
-			box-sizing: border-box;
-		}
-
-		.sidebar__expandable-arrow,
-		.gridicons-external {
-			width: 20px;
-			height: 20px;
-		}
-
-		.sidebar__expandable-content {
-			background: var( --color-sidebar-submenu-background );
-			padding: 7px 0 8px;
-
-			.sidebar__menu-link {
-				padding: 5px 12px;
-				/* stylelint-disable-next-line  declaration-property-unit-allowed-list */
-				font-size: rem( 13px );
-				line-height: 1.4;
-				font-weight: 400;
-				color: var( --color-sidebar-submenu-text );
-
-				&:hover,
-				&:focus {
-					background-color: var( --color-sidebar-submenu-hover-background );
-					color: var( --color-sidebar-submenu-hover-text );
-				}
-			}
-
-			.selected .sidebar__menu-link {
-				background-color: var( --color-sidebar-submenu-selected-background );
-				color: var( --color-sidebar-submenu-selected-text );
-				font-weight: 600;
-			}
-
-			.sidebar__menu-link-text {
-				padding: 0;
-			}
-		}
-
 		.sidebar__inline-text {
 			position: absolute;
 			right: 20px;
 			top: 50%;
 			transform: translateY( -50% );
 			opacity: 0.8;
-		}
-
-		.sidebar__menu-icon {
-			background-size: contain;
-			color: var( --color-sidebar-gridicon-fill );
-			margin-right: 8px;
-		}
-
-		img.sidebar__menu-icon {
-			opacity: 0.6;
-		}
-
-		.selected .sidebar__menu-link {
-			background: var( --color-sidebar-menu-selected-background );
-			color: var( --color-sidebar-menu-selected-text );
-
-			&::after {
-				display: block;
-			}
-		}
-
-		.sidebar__menu--selected .selected .sidebar__menu-link::after,
-		.sidebar__expandable-content .selected .sidebar__menu-link::after {
-			display: none;
 		}
 
 		.sidebar__menu-item-parent.selected .sidebar__menu-link {
@@ -524,7 +411,7 @@ $font-size: rem( 14px );
 // Flyout menu (showing from >782px)
 @media screen and ( min-width: 783px ) {
 	.theme-default {
-		.focus-content,
+		/*.focus-content,
 		.focus-sites,
 		.focus-sidebar {
 			.sidebar {
@@ -553,7 +440,7 @@ $font-size: rem( 14px );
 					transform: translateX( -100% );
 				}
 			}
-		}
+		}*/
 
 		.sidebar__menu.is-togglable:not( .is-toggle-open ).hovered {
 			// .hovered is handled in client/layout/sidebar/expandable.jsx. Needed for repositioning and hover intent.
@@ -596,10 +483,10 @@ $font-size: rem( 14px );
 @media screen and ( max-width: 782px ) {
 	// client/layout/sidebar/style.scss
 	.theme-default {
-		.focus-content .layout__content {
+		/*.focus-content .layout__content {
 			padding: 71px 24px 24px;
 			transition: padding 0.15s ease-in-out;
-		}
+		}*/
 
 		.sidebar {
 			// client/my-sites/current-site/style.scss
@@ -624,8 +511,8 @@ $font-size: rem( 14px );
 				margin: 0 0 11px;
 			}
 
-			.sidebar__heading,
-			.sidebar__menu-link {
+			.sidebar__heading {
+			//.sidebar__menu-link {
 				padding: 0 0 0 12px;
 				font-size: 1rem;
 			}
@@ -637,12 +524,12 @@ $font-size: rem( 14px );
 				}
 			}
 
-			.sidebar__menu-icon {
+			/*.sidebar__menu-icon {
 				margin-right: 10px;
-			}
+			}*/
 
-			.sidebar__expandable-title,
-			.sidebar__menu-link-text {
+			.sidebar__expandable-title {
+			//.sidebar__menu-link-text {
 				padding: 13px 0;
 				max-height: inherit;
 			}
@@ -665,7 +552,7 @@ $font-size: rem( 14px );
 	}
 }
 
-@media screen and ( max-width: 660px ) {
+/*@media screen and ( max-width: 660px ) {
 	.theme-default {
 		// client/layout/style.scss
 		.layout__content {
@@ -682,7 +569,7 @@ $font-size: rem( 14px );
 			padding-bottom: 120px;
 		}
 	}
-}
+}*/
 
 @supports ( mask-image: none ) or ( -webkit-mask-image: none ) {
 	.sidebar__menu-icon-img {

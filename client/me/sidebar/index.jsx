@@ -19,7 +19,6 @@ import { logoutUser } from 'calypso/state/logout/actions';
 import { setNextLayoutFocus } from 'calypso/state/ui/layout-focus/actions';
 
 import './style.scss';
-import 'calypso/my-sites/sidebar/style.scss'; // Copy styles from the My Sites sidebar.
 
 class MeSidebar extends Component {
 	onNavigate = () => {

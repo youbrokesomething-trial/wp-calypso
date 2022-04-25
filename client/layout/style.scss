@@ -365,3 +365,49 @@
 		outline: 1px solid var( --color-sidebar-border );
 	}
 }
+
+// Flyout menu (showing from >782px)
+@media screen and ( min-width: 783px ) {
+	.focus-content,
+	.focus-sites,
+	.focus-sidebar {
+		.sidebar {
+			z-index: z-index( 'root', '.layout__secondary' );
+		}
+	}
+
+	.is-sidebar-overflow {
+		.focus-content,
+		.focus-sidebar {
+			.sidebar,
+			.layout__secondary {
+				overflow: initial;
+			}
+		}
+	}
+
+	.is-sidebar-overflow {
+		.is-section-theme {
+			.layout__secondary {
+				transform: translateX( -100% );
+			}
+		}
+	}
+}
+
+@media screen and ( max-width: 782px ) {
+	.focus-content .layout__content {
+		padding: 71px 24px 24px;
+		transition: padding 0.15s ease-in-out;
+	}
+}
+
+@media screen and ( max-width: 660px ) {
+	.layout__content {
+		min-height: initial;
+	}
+
+	.focus-content .layout__content {
+		padding: 47px 0 0;
+	}
+}
