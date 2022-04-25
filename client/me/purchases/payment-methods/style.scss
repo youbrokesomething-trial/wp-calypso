@@ -82,6 +82,10 @@
 	font-size: 0.875rem;
 }
 
+.payment-method-delete {
+	text-decoration: underline;
+}
+
 .payment-method-delete-dialog {
 	&.dialog {
 		max-width: 440px;
