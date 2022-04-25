@@ -12,38 +12,34 @@ import 'calypso/me/purchases/payment-methods/style.scss';
 
 export default function PaymentMethod( { paymentMethod }: { paymentMethod: PaymentMethodType } ) {
 	return (
-		<div>
-			<FoldableCard
-				className={ classNames( 'payment-method__wrapper', {
-					'payment-method__wrapper--jetpack-cloud': isJetpackCloud(),
-				} ) }
-				header={
-					<div className="payment-method">
-						<PaymentMethodDetails
-							lastDigits={ paymentMethod.card }
-							email={ paymentMethod.email }
-							cardType={ paymentMethod.card_type || '' }
-							paymentPartner={ paymentMethod.payment_partner }
-							name={ paymentMethod.name }
-							expiry={ paymentMethod.expiry }
-							isExpired={ paymentMethod.is_expired }
-						/>
-						{ isCreditCard( paymentMethod ) && (
-							<PaymentMethodBackupToggle card={ paymentMethod } />
-						) }
-					</div>
-				}
-			>
-				<div className="payment-method__edit-payment-method">
-					<TaxInfoArea
-						last4={ paymentMethod.card }
-						brand={ paymentMethod.card_type }
-						storedDetailsId={ paymentMethod.stored_details_id }
-						paymentPartnerProcessorId={ paymentMethod.payment_partner }
+		<FoldableCard
+			className={ classNames( 'payment-method__wrapper', {
+				'payment-method__wrapper--jetpack-cloud': isJetpackCloud(),
+			} ) }
+			header={
+				<div className="payment-method">
+					<PaymentMethodDetails
+						lastDigits={ paymentMethod.card }
+						email={ paymentMethod.email }
+						cardType={ paymentMethod.card_type || '' }
+						paymentPartner={ paymentMethod.payment_partner }
+						name={ paymentMethod.name }
+						expiry={ paymentMethod.expiry }
+						isExpired={ paymentMethod.is_expired }
 					/>
-					<PaymentMethodDelete card={ paymentMethod } />
+					{ isCreditCard( paymentMethod ) && <PaymentMethodBackupToggle card={ paymentMethod } /> }
 				</div>
-			</FoldableCard>
-		</div>
+			}
+		>
+			<div className="payment-method__edit-payment-method">
+				<TaxInfoArea
+					last4={ paymentMethod.card }
+					brand={ paymentMethod.card_type }
+					storedDetailsId={ paymentMethod.stored_details_id }
+					paymentPartnerProcessorId={ paymentMethod.payment_partner }
+				/>
+				<PaymentMethodDelete card={ paymentMethod } />
+			</div>
+		</FoldableCard>
 	);
 }
