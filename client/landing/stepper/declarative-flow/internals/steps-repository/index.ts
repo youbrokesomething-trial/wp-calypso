@@ -12,7 +12,7 @@ export { default as wooTransfer } from './woo-transfer';
 export { default as wooInstallPlugins } from './woo-install-plugins';
 export { default as processing } from './processing-step';
 export { default as error } from './error-step';
-export { default as wooConfirm } from './woocommerce-confirm';
+export { default as wooConfirm } from './woo-confirm';
 
 export type StepPath =
 	| 'courses'

@@ -41,7 +41,7 @@ const TRANSFERRING_NOT_BLOCKERS = [
 	eligibilityHoldsConstants.TRANSFER_ALREADY_EXISTS, // Already Atomic sites are handled in the install flow.
 ];
 
-const WooCommerceConfirm: Step = function WooCommerceConfirm( { navigation } ) {
+const WooConfirm: Step = function WooCommerceConfirm( { navigation } ) {
 	const { goBack, submit } = navigation;
 	const { __ } = useI18n();
 	const site = useSite();
@@ -301,4 +301,4 @@ const WooCommerceConfirm: Step = function WooCommerceConfirm( { navigation } ) {
 	);
 };
 
-export default WooCommerceConfirm;
+export default WooConfirm;
