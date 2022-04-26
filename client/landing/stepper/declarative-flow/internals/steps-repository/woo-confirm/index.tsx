@@ -172,8 +172,9 @@ const WooConfirm: Step = function WooCommerceConfirm( { navigation } ) {
 		[] /*[ dispatch, goToNextStep, site, isDataReady, isReadyToStart ]*/
 	);
 
+	const domain = stagingDomain;
+
 	// TODO - Replace with `useSiteDomains` once that gets merged in
-	const domain = '';
 	const backUrl = '';
 
 	console.log(
