@@ -13,7 +13,7 @@ import { LoadingEllipsis } from 'calypso/components/loading-ellipsis';
 import WarningCard from 'calypso/components/warning-card';
 import { useSite } from 'calypso/landing/stepper/hooks/use-site';
 import {
-	WOOCOMMERCE_ELIGIBILITY_STORE,
+	AUTOMATED_ELIGIBILITY_STORE,
 	SITE_STORE,
 	PRODUCTS_LIST_STORE,
 } from 'calypso/landing/stepper/stores';
@@ -47,16 +47,16 @@ const WooConfirm: Step = function WooCommerceConfirm( { navigation } ) {
 	const site = useSite();
 	const siteId = site && site?.ID;
 	const eligibilityHolds = useSelect( ( select ) =>
-		select( WOOCOMMERCE_ELIGIBILITY_STORE ).getEligibilityHolds( siteId )
+		select( AUTOMATED_ELIGIBILITY_STORE ).getEligibilityHolds( siteId )
 	);
 	const eligibilityWarnings = useSelect( ( select ) =>
-		select( WOOCOMMERCE_ELIGIBILITY_STORE ).getEligibilityWarnings( siteId )
+		select( AUTOMATED_ELIGIBILITY_STORE ).getEligibilityWarnings( siteId )
 	);
 	const wpcomSubdomainWarning = useSelect( ( select ) =>
-		select( WOOCOMMERCE_ELIGIBILITY_STORE ).getWpcomSubdomainWarning( siteId )
+		select( AUTOMATED_ELIGIBILITY_STORE ).getWpcomSubdomainWarning( siteId )
 	);
 	const warnings = useSelect( ( select ) =>
-		select( WOOCOMMERCE_ELIGIBILITY_STORE ).getNonSubdomainWarnings( siteId )
+		select( AUTOMATED_ELIGIBILITY_STORE ).getNonSubdomainWarnings( siteId )
 	);
 	const latestAtomicTransfer = useSelect( ( select ) =>
 		select( SITE_STORE ).getSiteLatestAtomicTransfer( siteId || 0 )
