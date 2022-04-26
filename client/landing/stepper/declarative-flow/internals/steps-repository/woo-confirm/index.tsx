@@ -96,7 +96,7 @@ const WooConfirm: Step = function WooCommerceConfirm( { navigation } ) {
 		( typeof latestAtomicTransfer !== 'undefined' ||
 			typeof latestAtomicTransferError !== 'undefined' );
 
-	console.group( '' );
+	console.group( 'transfer details' );
 	console.log( { transferringDataIsAvailable } );
 	console.log( { transferringBlockers } );
 	console.log( { latestAtomicTransfer } );

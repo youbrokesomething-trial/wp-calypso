@@ -7,4 +7,4 @@ export const SITE_STORE = Site.register( {
 	client_secret: config( 'wpcom_signup_key' ),
 } );
 export const PRODUCTS_LIST_STORE = ProductsList.register();
-export const WOOCOMMERCE_ELIGIBILITY_STORE = AutomatedTransferEligibility.register();
+export const AUTOMATED_ELIGIBILITY_STORE = AutomatedTransferEligibility.register();
