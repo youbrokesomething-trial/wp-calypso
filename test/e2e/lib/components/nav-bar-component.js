@@ -54,7 +54,7 @@ export default class NavBarComponent extends AsyncBaseContainer {
 	async openNotificationsShortcut() {
 		await driverHelper.waitUntilElementLocatedAndVisible(
 			this.driver,
-			By.css( '.masterbar__notifications' )
+			By.css( '.masterbar-notifications' )
 		);
 		return await this.driver.findElement( By.css( 'body' ) ).sendKeys( 'n' );
 	}
