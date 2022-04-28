@@ -38261,6 +38261,7 @@ testarmada-magellan@11.0.10:
     "@automattic/languages": "workspace:^"
     "@automattic/typography": "workspace:^"
     "@automattic/viewport": "workspace:^"
+    "@automattic/whats-new": "workspace:^"
     "@automattic/wp-babel-makepot": "workspace:^"
     "@babel/core": ^7.17.5
     "@babel/eslint-parser": ^7.17.0
