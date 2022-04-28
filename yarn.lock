@@ -601,6 +601,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@automattic/generated-design-picker@workspace:^, @automattic/generated-design-picker@workspace:packages/generated-design-picker":
+  version: 0.0.0-use.local
+  resolution: "@automattic/generated-design-picker@workspace:packages/generated-design-picker"
+  dependencies:
+    "@automattic/calypso-typescript-config": "workspace:^"
+    tslib: ^2.3.0
+    typescript: ^4.5.5
+  peerDependencies:
+    react: ^17.0.2
+    react-dom: ^17.0.2
+  languageName: unknown
+  linkType: soft
+
 "@automattic/happychat-app@workspace:apps/happychat":
   version: 0.0.0-use.local
   resolution: "@automattic/happychat-app@workspace:apps/happychat"
@@ -38257,6 +38270,7 @@ testarmada-magellan@11.0.10:
     "@automattic/components": "workspace:^"
     "@automattic/data-stores": "workspace:^"
     "@automattic/eslint-plugin-json": "workspace:^"
+    "@automattic/generated-design-picker": "workspace:^"
     "@automattic/i18n-utils": "workspace:^"
     "@automattic/languages": "workspace:^"
     "@automattic/typography": "workspace:^"

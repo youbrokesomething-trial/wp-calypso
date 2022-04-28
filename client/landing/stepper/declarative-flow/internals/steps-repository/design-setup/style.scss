@@ -289,3 +289,24 @@ $design-button-primary-color: rgb( 17, 122, 201 );
 		display: none;
 	}
 }
+
+/**
+ * Generated Design Picker
+ */
+.design-picker__is-generated {
+    .step-container__header {
+        align-items: center;
+        display: flex;
+        row-gap: 24px;
+        flex-wrap: wrap;
+
+        .button {
+            border-radius: 4px;
+            font-weight: 500;
+            padding: 9px 48px;
+
+            // Override unnecessary super specificity added by another class.
+            box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.05 ) !important;
+        }
+    }
+}
